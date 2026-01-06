@@ -1,5 +1,8 @@
 import express from "express";
 import cors from "cors";
+import { initConfig } from "./config/init";
+
+
 
 const app = express();
 const PORT = process.env.PORT
@@ -21,3 +24,8 @@ app.post("/alunos", (req, res) => {
 app.listen(PORT, () => {
   console.log("API rodando");
 });
+
+(async () => {
+  await initConfig(); // cria a tabela se não existir
+  app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+})();
