@@ -1,5 +1,12 @@
 {
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "concurrently \"bun --cwd apps/api dev\" \"bun --cwd apps/web dev\"",
+    "dev:api": "bun --cwd apps/api dev",
+    "dev:web": "bun --cwd apps/web dev"
+  },
   "devDependencies": {
-    "@types/typescript": "^0.4.29"
+    "concurrently": "^9.2.1"
   }
 }
