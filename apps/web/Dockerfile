@@ -1,35 +1,36 @@
-# ---------- build ----------
+# =========================
+# STAGE 1 - BUILD
+# =========================
 FROM oven/bun:1.1 AS build
 
 WORKDIR /app
 
-# copia apenas package.json
+# Copia apenas o package.json primeiro (cache)
 COPY package.json ./
+
 RUN bun install
 
-# copia o resto do código
+# Copia o resto do projeto
 COPY . .
 
-# build do Vite
+# Build do Vite
 RUN bun run build
 
 
-# ---------- runtime ----------
+# =========================
+# STAGE 2 - NGINX
+# =========================
 FROM nginx:alpine
 
+# Remove config default
 RUN rm /etc/nginx/conf.d/default.conf
 
+# Copia build do Vite
 COPY --from=build /app/dist /usr/share/nginx/html
 
-RUN printf "server {\n\
-  listen 80;\n\
-  server_name _;\n\
-  root /usr/share/nginx/html;\n\
-  index index.html;\n\
-  location / {\n\
-    try_files \$uri \$uri/ /index.html;\n\
-  }\n\
-}\n" > /etc/nginx/conf.d/app.conf
+# Copia config do nginx (opcional, mas recomendado)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
+
 CMD ["nginx", "-g", "daemon off;"]
