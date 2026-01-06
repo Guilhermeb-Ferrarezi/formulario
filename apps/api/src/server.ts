@@ -1,31 +1,32 @@
 import express from "express";
 import cors from "cors";
 import { initConfig } from "./config/init";
-
-
+import alunoRouter from "./routes/aluno.routes";
 
 const app = express();
-const PORT = process.env.PORT
+const PORT = process.env.PORT;
+
+// CORS
 app.use(cors({
-  origin: [
-    "https://sga.santos-tech.com"
-  ],
+  origin: ["https://sga.santos-tech.com"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
+// JSON middleware
 app.use(express.json());
 
-// suas rotas
-app.post("/alunos", (req, res) => {
-  res.status(201).json({ ok: true });
-});
+// Rotas
+app.use("/alunos", alunoRouter);
 
-app.listen(PORT, () => {
-  console.log("API rodando");
-});
-
+// Inicialização do banco e servidor
 (async () => {
-  await initConfig(); // cria a tabela se não existir
-  app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+  try {
+    await initConfig(); // cria tabela se não existir
+    console.log("✅ Tabela alunos pronta");
+
+    app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+  } catch (err) {
+    console.error("❌ Erro ao inicializar banco:", err);
+  }
 })();
