@@ -1,27 +1,20 @@
 {
+  "name": "api",
   "private": true,
-  "workspaces": ["apps/*", "packages/*"],
-  "scripts": {
-    "dev": "concurrently \"bun --cwd apps/api dev\" \"bun --cwd apps/web dev\"",
-    "dev:api": "bun --cwd apps/api dev",
-    "dev:web": "bun --cwd apps/web dev"
-  },
-  "devDependencies": {
-    "@types/bun": "latest",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "concurrently": "^9.2.1",
-    "ts-node-dev": "^2.0.0"
-  },
-  "name": "projetos",
-  "module": "index.ts",
   "type": "module",
-  "peerDependencies": {
-    "typescript": "^5.9.3"
+  "scripts": {
+    "dev": "bun src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "dependencies": {
-    "cors": "^2.8.5",
     "express": "^5.2.1",
+    "cors": "^2.8.5",
     "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/cors": "^2.8.19",
+    "typescript": "^5.9.3"
   }
 }
