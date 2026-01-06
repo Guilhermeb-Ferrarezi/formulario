@@ -13,7 +13,7 @@ export function Formulario() {
       /><br />
 
       <input
-        type="text"
+        type="date"
         name="dataNascimento"
         value={values.dataNascimento}
         onChange={handleChange}
