@@ -4,25 +4,30 @@ import alunoRoutes from "./routes/aluno.routes";
 import { initConfig } from "./config/init";
 
 const app = express();
-const PORT = process.env.PORT
+
+// ✅ porta segura para produção
+const PORT = Number(process.env.PORT) || 80;
 
 app.use(cors());
 app.use(express.json());
 
 app.use("/alunos", alunoRoutes);
 
-// 🔥 inicializa banco ao subir
-initConfig()
-  .then(() => console.log("🚀 Configuração inicializada"))
-  .catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
+// ✅ inicializa config ANTES de subir o servidor
+async function startServer() {
+  try {
+    await initConfig();
+    console.log("🚀 Configuração inicializada");
 
-try {app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-})} catch (error) {
-  console.error("Erro ao iniciar o servidor:", error);
+    app.listen(PORT, () => {
+      console.log(`✅ Servidor rodando na porta ${PORT}`);
+    });
+  } catch (error) {
+    console.error("❌ Erro ao iniciar o servidor:", error);
+    process.exit(1);
+  }
 }
+
+startServer();
 
 export default app;
