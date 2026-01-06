@@ -1,4 +1,4 @@
-import { pool } from "../config/pool.ts";
+import { pool } from "../config/pool";
 import type { Aluno } from "../models/aluno.model.ts";
 
 export async function criarAluno(aluno: Aluno) {

@@ -25,3 +25,4 @@ export async function criarAlunoController(req: Request, res: Response) {
     return res.status(500).json({ erro: "Erro ao salvar aluno" });
   }
 }
+
