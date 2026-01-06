@@ -21,14 +21,28 @@ export function useFormulario() {
     }));
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (validarFormulario(values)) {
-      setMensagem("Formulário válido. Enviando...");
-      console.log(values);
-    } else {
+    // 🔴 valida antes de enviar
+    if (!validarFormulario(values)) {
       setMensagem("Preencha todos os campos.");
+      return;
+    }
+
+    // ✅ AQUI entra o fetch
+    const response = await fetch("http://localhost:3333/alunos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+
+    if (response.ok) {
+      setMensagem("Cadastro realizado com sucesso!");
+    } else {
+      setMensagem("Erro ao enviar os dados.");
     }
   }
 
