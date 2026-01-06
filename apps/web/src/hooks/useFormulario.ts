@@ -2,6 +2,9 @@ import { useState } from "react";
 import { validarFormulario } from "../utils/validarFormulario";
 import type { FormValues } from "../utils/validarFormulario";
 
+// 🔥 URL vinda do ambiente (Vite)
+const API_URL = import.meta.env.VITE_API_URL;
+
 export function useFormulario() {
   const [mensagem, setMensagem] = useState("");
   const [values, setValues] = useState<FormValues>({
@@ -15,7 +18,7 @@ export function useFormulario() {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
 
-    setValues(prev => ({
+    setValues((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -24,24 +27,27 @@ export function useFormulario() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    // 🔴 valida antes de enviar
     if (!validarFormulario(values)) {
       setMensagem("Preencha todos os campos.");
       return;
     }
 
-    // ✅ AQUI entra o fetch
-    const response = await fetch("http://localhost:3333/alunos", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    });
+    try {
+      const response = await fetch(`${API_URL}/alunos`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
 
-    if (response.ok) {
+      if (!response.ok) {
+        throw new Error("Erro na requisição");
+      }
+
       setMensagem("Cadastro realizado com sucesso!");
-    } else {
+    } catch (error) {
+      console.error(error);
       setMensagem("Erro ao enviar os dados.");
     }
   }
@@ -53,3 +59,4 @@ export function useFormulario() {
     handleSubmit,
   };
 }
+
