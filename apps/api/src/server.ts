@@ -8,7 +8,14 @@ const app = express();
 // ✅ porta segura para produção
 const PORT = Number(process.env.PORT) || 80;
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "https://sga.santos-tech.com"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 app.use(express.json());
 
 app.use("/alunos", alunoRoutes);
