@@ -9,18 +9,19 @@ export async function criarAlunoController(req: Request, res: Response) {
   }
 
   try {
-    await pool.query(
+    const result = await pool.query(
       `
       INSERT INTO alunos
       (nome, data_nascimento, whatsapp, email, cpf)
       VALUES ($1, $2, $3, $4, $5)
+      RETURNING *
       `,
       [nome, dataNascimento, whatsapp, email, cpf]
     );
 
-    return res.status(201).json({ mensagem: "Aluno criado com sucesso" });
+    return res.status(201).json(result.rows[0]);
   } catch (erro) {
-    console.error("Erro banco:", erro);
+    console.error("❌ Erro banco:", erro);
     return res.status(500).json({ erro: "Erro ao salvar aluno" });
   }
 }
