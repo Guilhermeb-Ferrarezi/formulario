@@ -2,6 +2,8 @@ import { Router } from "express";
 import { pool } from "../config/pool";
 
 const router = Router();
+const result = await pool.query("SELECT NOW()");
+console.log(result.rows);
 
 router.post("/", async (req, res) => {
   try {
