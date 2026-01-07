@@ -23,23 +23,32 @@ export default function Dashboard() {
   const buscarAlunos = async () => {
     try {
       const token = localStorage.getItem("token");
+      console.log("🔑 Token obtido:", token);
+      
+      console.log("📡 Fazendo requisição para: /api/alunos");
+      
       const response = await fetch("/api/alunos", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      
+      console.log("📡 Status da resposta:", response.status);
 
       if (response.ok) {
         const data = await response.json();
+        console.log("✅ Alunos recebidos:", data);
         setAlunos(data);
       } else if (response.status === 401) {
+        console.log("❌ Não autorizado - redirecionando para login");
         handleLogout();
       } else {
+        console.log("❌ Erro na resposta:", response.status);
         setErro("Erro ao buscar alunos");
       }
     } catch (error) {
+      console.error("❌ Erro ao conectar:", error);
       setErro("Erro ao conectar com o servidor");
-      console.error(error);
     } finally {
       setCarregando(false);
     }
