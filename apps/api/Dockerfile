@@ -2,17 +2,11 @@ FROM oven/bun:1.1.38
 
 WORKDIR /app
 
-# copia apenas arquivos de dependência primeiro (cache)
-COPY package.json bun.lockb* ./
+COPY package.json bun.lock* ./
+RUN bun install
 
-RUN bun install --production
-
-# copia o resto
 COPY . .
-
-ENV NODE_ENV=production
-ENV PORT=3000
 
 EXPOSE 3000
 
-CMD ["bun", "run", "src/server.ts"]
+CMD ["bun", "run", "start"]

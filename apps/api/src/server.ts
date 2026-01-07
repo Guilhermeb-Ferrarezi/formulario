@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 // Middlewares
 app.use(cors({ 
   credentials: true, 
-  origin: ["https://santos-tech.com", "http://localhost:5173"] // Permite frontend
+  origin: true // Permite qualquer origem (você pode restringir depois)
 }));
 app.use(express.json());
 
