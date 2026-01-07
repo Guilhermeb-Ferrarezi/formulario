@@ -32,9 +32,11 @@ const dashboardPath = path.resolve(__dirname, "../web/dist");
 app.use("/dashboard", autenticarDashboard, express.static(dashboardPath));
 
 // Fallback para React Router
-app.get("/dashboard/:path(.*)", autenticarDashboard, (req, res) => {
-  res.sendFile(path.join(dashboardPath, "index.html"));
+app.get('/dashboard/:path(*)', (req, res) => {
+  const path = req.params.path;
+  res.send(`Você acessou o path: ${path}`);
 });
+
 // =======================
 // Rotas da API protegidas
 // =======================
