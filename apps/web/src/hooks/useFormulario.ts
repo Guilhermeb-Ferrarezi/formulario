@@ -3,7 +3,7 @@ import { validarFormulario } from "../utils/validarFormulario";
 import type { FormValues } from "../utils/validarFormulario";
 
 // 🔥 URL vinda do ambiente (Vite)
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 export function useFormulario() {
   const [mensagem, setMensagem] = useState("");
@@ -17,7 +17,6 @@ export function useFormulario() {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-
     setValues((prev) => ({
       ...prev,
       [name]: value,
@@ -59,4 +58,3 @@ export function useFormulario() {
     handleSubmit,
   };
 }
-
