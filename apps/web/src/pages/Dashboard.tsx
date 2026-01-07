@@ -25,9 +25,9 @@ export default function Dashboard() {
       const token = localStorage.getItem("token");
       console.log("🔑 Token obtido:", token);
       
-      console.log("📡 Fazendo requisição para: /api/alunos");
+      console.log("📡 Fazendo requisição para: https://api.santos-tech.com/api/alunos");
       
-      const response = await fetch("/api/alunos", {
+      const response = await fetch("https://api.santos-tech.com/api/alunos", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -36,9 +36,18 @@ export default function Dashboard() {
       console.log("📡 Status da resposta:", response.status);
 
       if (response.ok) {
-        const data = await response.json();
-        console.log("✅ Alunos recebidos:", data);
-        setAlunos(data);
+        const contentType = response.headers.get("content-type");
+        console.log("📄 Content-Type:", contentType);
+        
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          console.log("✅ Alunos recebidos:", data);
+          setAlunos(data);
+        } else {
+          const text = await response.text();
+          console.error("❌ Resposta não é JSON:", text);
+          setErro("Erro: resposta inválida do servidor");
+        }
       } else if (response.status === 401) {
         console.log("❌ Não autorizado - redirecionando para login");
         handleLogout();
