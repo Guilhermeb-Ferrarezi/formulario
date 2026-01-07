@@ -4,27 +4,34 @@ import { initConfig } from "./config/init";
 import alunoRouter from "./routes/aluno.routes";
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 80;
 
-// CORS
+// CORS configurado para credenciais
+const allowedOrigins = [
+  "https://sga.santos-tech.com", // frontend
+  "https://dashboard-bun.com"    // dashboard, se necessário
+];
+
 app.use(cors({
-  origin: [
-    "https://sga.santos-tech.com",
-    "https://api.santos-tech.com"  ],
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // server-to-server
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      callback(new Error("CORS não permitido"));
+    }
+  },
+  credentials: true,              // ⚠️ permite cookies
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// JSON middleware
 app.use(express.json());
-
-// Rotas
 app.use("/alunos", alunoRouter);
 
-// Inicialização do banco e servidor
 (async () => {
   try {
-    await initConfig(); // cria tabela se não existir
+    await initConfig();
     console.log("✅ Tabela alunos pronta");
 
     app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
