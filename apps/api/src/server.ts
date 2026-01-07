@@ -2,7 +2,6 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import cors from "cors";
-import cookieParser from "cookie-parser";
 import alunoRouter from "./routes/aluno.routes";
 import authRouter from "./routes/auth.routes";
 
@@ -38,7 +37,6 @@ if (!frontendPath || !fs.existsSync(frontendPath)) {
 // Middlewares
 app.use(cors({ credentials: true, origin: true }));
 app.use(express.json());
-app.use(cookieParser());
 
 // ===== ROTAS DA API =====
 app.use("/api/alunos", alunoRouter);
