@@ -25,4 +25,14 @@ app.get("/health", (_req, res) => {
 // Inicialização
 app.listen(PORT, () => {
   console.log(`✅ API rodando na porta ${PORT}`);
+  console.log(`🌐 Acesse: http://0.0.0.0:${PORT}/health`);
+});
+
+// Tratamento de sinais
+process.on("SIGTERM", () => {
+  console.log("⚠️ SIGTERM recebido, mas mantendo servidor ativo");
+});
+
+process.on("SIGINT", () => {
+  console.log("⚠️ SIGINT recebido, mas mantendo servidor ativo");
 });
