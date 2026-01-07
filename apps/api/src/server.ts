@@ -22,6 +22,11 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
+// Rota de teste simples
+app.get("/test", (_req, res) => {
+  res.send("API is working!");
+});
+
 // Rota raiz
 app.get("/", (_req, res) => {
   res.json({ 
