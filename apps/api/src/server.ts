@@ -1,13 +1,15 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
 import { initConfig } from "./config/init";
 import alunoRouter from "./routes/aluno.routes";
-import authRouter from "./routes/auth.routes";
 
 const app = express();
 const PORT = process.env.PORT || 80;
 
-// CORS para frontend e dashboard remoto
+// =======================
+// Configuração CORS
+// =======================
 app.use(cors({
   origin: [
     "https://sga.santos-tech.com",
@@ -20,11 +22,49 @@ app.use(cors({
 
 app.use(express.json());
 
-// Rotas
-app.use("/auth", authRouter);       // login do dashboard
-app.use("/alunos", alunoRouter);    // rotas protegidas
+// =======================
+// Middleware de autenticação do dashboard
+// =======================
+function autenticarDashboard(req: any, res: any, next: any) {
+  const authHeader = req.headers.authorization;
 
+  // Basic Auth
+  if (!authHeader) {
+    res.setHeader("WWW-Authenticate", 'Basic realm="Dashboard"');
+    return res.status(401).send("Autenticação necessária");
+  }
+
+  // authHeader = "Basic base64(usuario:senha)"
+  const base64Credentials = authHeader.split(" ")[1];
+  const credentials = Buffer.from(base64Credentials, "base64").toString("ascii");
+  const [username, password] = credentials.split(":");
+
+  if (username === "admin" && password === "123456") {
+    return next();
+  } else {
+    res.setHeader("WWW-Authenticate", 'Basic realm="Dashboard"');
+    return res.status(401).send("Credenciais inválidas");
+  }
+}
+
+// =======================
+// Rotas do dashboard
+// =======================
+const dashboardPath = path.join(__dirname, "frontend/dist");
+
+app.use("/dashboard", autenticarDashboard, express.static(dashboardPath));
+app.get("/dashboard/*", autenticarDashboard, (req, res) => {
+  res.sendFile(path.join(dashboardPath, "index.html"));
+});
+
+// =======================
+// Rotas da API protegidas
+// =======================
+app.use("/alunos", alunoRouter);
+
+// =======================
 // Inicialização do banco e servidor
+// =======================
 (async () => {
   try {
     await initConfig();

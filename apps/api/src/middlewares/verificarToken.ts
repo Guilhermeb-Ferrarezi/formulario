@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-// Verifica token nas rotas protegidas
+// Middleware para proteger rotas com token
 export function verificarToken(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers["authorization"];
   const token = authHeader?.split(" ")[1]; // Bearer TOKEN
@@ -11,4 +11,3 @@ export function verificarToken(req: Request, res: Response, next: NextFunction) 
     return res.status(401).json({ erro: "Não autorizado" });
   }
 }
-1
