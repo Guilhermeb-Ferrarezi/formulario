@@ -34,10 +34,16 @@ app.use(express.json());
 const dashboardPath = path.resolve(__dirname, "../web/dist");
 
 // Servir arquivos estáticos
+// Servir arquivos estáticos do dashboard
 app.use("/dashboard", autenticarDashboard, express.static(dashboardPath));
 
-// Fallback para React Router usando app.all e regex
-app.all(/^\/dashboard(\/.*)?$/, autenticarDashboard, (_req, res) => {
+// Rota para /dashboard exato
+app.get("/dashboard", autenticarDashboard, (_req, res) => {
+  res.sendFile(path.join(dashboardPath, "index.html"));
+});
+
+// Fallback para qualquer rota do React Router
+app.all(/^\/dashboard\/.+$/, autenticarDashboard, (_req, res) => {
   res.sendFile(path.join(dashboardPath, "index.html"));
 });
 
