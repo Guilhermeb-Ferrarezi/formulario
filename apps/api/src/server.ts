@@ -8,7 +8,9 @@ const PORT = process.env.PORT;
 
 // CORS
 app.use(cors({
-  origin: ["https://sga.santos-tech.com"],
+  origin: [
+    "https://sga.santos-tech.com",
+    "https://api.santos-tech.com"  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
