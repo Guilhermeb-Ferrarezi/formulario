@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/components/dashboardlayout.tsx","./src/components/protectedroutes.tsx","./src/components/usertable.tsx","./src/components/formulario.tsx","./src/hooks/useformulario.ts","./src/hooks/useusers.ts","./src/pages/dashboard.tsx","./src/pages/login.tsx","./src/services/api.ts","./src/utils/validarformulario.ts"],"version":"5.9.3"}
