@@ -1,10 +1,11 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
+import fs from "fs";
 import { initConfig } from "./config/init";
 import alunoRouter from "./routes/aluno.routes";
 
-// Middleware de autenticação
+// Middleware simples de autenticação
 function autenticarDashboard(req: express.Request, res: express.Response, next: express.NextFunction) {
   const senha = req.headers["x-dashboard-password"];
   const SENHA_CORRETA = process.env.DASHBOARD_PASSWORD || "minhasenha123";
@@ -30,25 +31,13 @@ app.use(
 );
 app.use(express.json());
 
-// API
+// Rotas da API
 app.use("/alunos", alunoRouter);
 
-// Servir arquivos estáticos (JS/CSS/imagens)
+// Servir arquivos estáticos do React build
 app.use("/dashboard/static", express.static(path.join(dashboardPath, "static")));
 
-// Rota principal do dashboard
+// Rota principal do dashboard (sem wildcard)
 app.get("/dashboard", autenticarDashboard, (_req, res) => {
   res.sendFile(path.join(dashboardPath, "index.html"));
 });
-
-// Inicialização
-(async () => {
-  try {
-    await initConfig();
-    console.log("✅ Banco inicializado");
-
-    app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
-  } catch (err) {
-    console.error("❌ Erro ao inicializar servidor:", err);
-  }
-})();
