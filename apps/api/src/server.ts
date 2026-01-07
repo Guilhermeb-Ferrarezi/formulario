@@ -2,23 +2,43 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import alunoRouter from "./routes/aluno.routes";
 import authRouter from "./routes/auth.routes";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const frontendPath = path.resolve(__dirname, "../../app/web/dist");
+
+// Tenta múltiplos caminhos possíveis
+const possiveisCaminhos = [
+  path.resolve(process.cwd(), "web/dist"),      // EasyPanel/Produção
+  path.resolve(process.cwd(), "../web/dist"),   // Local (rodando de api/)
+  path.resolve(__dirname, "../../web/dist"),    // Alternativo
+];
+
+let frontendPath = "";
+for (const caminho of possiveisCaminhos) {
+  if (fs.existsSync(caminho)) {
+    frontendPath = caminho;
+    console.log(`✅ Build encontrado em: ${caminho}`);
+    break;
+  }
+}
 
 // Verifica se o build existe
-if (!fs.existsSync(frontendPath)) {
-  console.error("❌ React build não encontrado em:", frontendPath);
+if (!frontendPath || !fs.existsSync(frontendPath)) {
+  console.error("❌ React build não encontrado!");
+  console.error("Caminhos testados:");
+  possiveisCaminhos.forEach(c => console.error(`  - ${c}`));
+  console.error(`\nDiretório atual: ${process.cwd()}`);
+  console.error(`__dirname: ${__dirname}`);
   process.exit(1);
 }
 
 // Middlewares
 app.use(cors({ credentials: true, origin: true }));
 app.use(express.json());
-
+app.use(cookieParser());
 
 // ===== ROTAS DA API =====
 app.use("/api/alunos", alunoRouter);

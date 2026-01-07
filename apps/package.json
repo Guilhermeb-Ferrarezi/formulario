@@ -1,0 +1,8 @@
+{
+  "name": "apps",
+  "private": true,
+  "scripts": {
+    "build": "cd web && bun run build && cd ../api",
+    "start": "cd api && bun run start"
+  }
+}
