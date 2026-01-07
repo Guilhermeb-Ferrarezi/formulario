@@ -26,7 +26,7 @@ app.use(express.json());
 // =======================
 // Rotas do dashboard
 // =======================
-const dashboardPath = path.join(__dirname, "frontend/dist");
+const dashboardPath = path.resolve(__dirname, "../web/dist");
 
 // Servir arquivos estáticos do dashboard
 app.use("/dashboard", autenticarDashboard, express.static(dashboardPath));
