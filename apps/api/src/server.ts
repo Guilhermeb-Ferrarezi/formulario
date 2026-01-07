@@ -36,13 +36,10 @@ app.get("/", (_req, res) => {
   });
 });
 
-// Tratamento de sinais (evita que SIGTERM mate o processo imediatamente)
+// Tratamento de sinais - IGNORA SIGTERM para não encerrar
 process.on("SIGTERM", () => {
-  console.log("⚠️ SIGTERM recebido - aguardando conexões finalizarem...");
-  server.close(() => {
-    console.log("✅ Servidor encerrado graciosamente");
-    process.exit(0);
-  });
+  console.log("⚠️ SIGTERM recebido - IGNORANDO (servidor continua rodando)");
+  // NÃO faz nada - mantém o servidor ativo
 });
 
 process.on("SIGINT", () => {
