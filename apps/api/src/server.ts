@@ -7,7 +7,7 @@ import authRouter from "./routes/auth.routes";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const frontendPath = path.resolve(__dirname, "../../web/dist");
+const frontendPath = path.resolve(__dirname, "../../app/web/dist");
 
 // Verifica se o build existe
 if (!fs.existsSync(frontendPath)) {
