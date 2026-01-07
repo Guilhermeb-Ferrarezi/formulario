@@ -1,13 +1,20 @@
 import { Request, Response, NextFunction } from "express";
 
-// Middleware para proteger rotas com token
-export function verificarToken(req: Request, res: Response, next: NextFunction) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader?.split(" ")[1]; // Bearer TOKEN
+const TOKEN_VALIDO = "MEU_TOKEN_SECRETO"; // Mesmo token do auth.routes.ts
 
-  if (token === "MEU_TOKEN_SECRETO") {
-    return next();
-  } else {
-    return res.status(401).json({ erro: "Não autorizado" });
+export function verificarToken(req: Request, res: Response, next: NextFunction) {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ erro: "Token não fornecido" });
   }
+
+  // Formato esperado: "Bearer MEU_TOKEN_SECRETO"
+  const token = authHeader.replace("Bearer ", "");
+
+  if (token !== TOKEN_VALIDO) {
+    return res.status(401).json({ erro: "Token inválido" });
+  }
+
+  next();
 }
