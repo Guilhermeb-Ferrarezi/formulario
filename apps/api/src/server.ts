@@ -9,7 +9,8 @@ const PORT = Number(process.env.PORT) || 3000;
 // Middlewares
 app.use(cors({ 
   credentials: true, 
-  origin: true
+  origin: true,
+  allowedHeaders: ['Content-Type', 'Authorization'] // ADICIONE ISSO
 }));
 app.use(express.json());
 
