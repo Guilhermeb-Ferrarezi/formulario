@@ -1,7 +1,16 @@
 // web/src/hooks/useAlunos.ts
 import { useEffect, useState } from "react";
 import { listarAlunos} from "../services/api";
-import type {Aluno } from "../../../api/src/models/aluno.model"
+
+
+export type Aluno = {
+  id: number,
+  nome: string;
+  dataNascimento: string;
+  whatsapp: string;
+  email: string;
+  cpf: string;
+};
 
 export function useAlunos() {
   const [alunos, setAlunos] = useState<Aluno[]>([]);

@@ -1,5 +1,5 @@
 const API_URL = import.meta.env.VITE_API_URL;
-import type {Aluno} from "../../../../apps/api/src/models/aluno.model.ts"
+import type { Aluno } from "../hooks/useUsers";
 
 export async function criarAluno(dados: {
   nome: string;

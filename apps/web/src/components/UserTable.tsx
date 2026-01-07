@@ -1,5 +1,5 @@
 // web/src/components/AlunoTable.tsx
-import type { Aluno } from "../../../api/src/models/aluno.model.ts";
+import type { Aluno } from "../hooks/useUsers";
 
 type Props = {
   alunos: Aluno[];
