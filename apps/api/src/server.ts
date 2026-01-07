@@ -39,3 +39,29 @@ app.use("/alunos", alunoRouter);
     console.error("❌ Erro ao inicializar banco:", err);
   }
 })();
+
+// Middleware para proteger dashboard
+function autenticarDashboard(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    res.setHeader("WWW-Authenticate", 'Basic realm="Dashboard"');
+    return res.status(401).send("Autenticação necessária");
+  }
+
+  // authHeader = "Basic base64(username:senha)"
+  const base64Credentials = authHeader.split(" ")[1];
+  const credentials = Buffer.from(base64Credentials, "base64").toString("ascii");
+  const [username, password] = credentials.split(":");
+
+  // Aqui você define usuário e senha
+  if (username === "admin" && password === "123456") {
+    return next(); // autorizado
+  } else {
+    res.setHeader("WWW-Authenticate", 'Basic realm="Dashboard"');
+    return res.status(401).send("Credenciais inválidas");
+  }
+}
+
+// Usa o middleware só para a rota do dashboard
+app.use("/dashboard", autenticarDashboard, express.static("dashboard_build"));
