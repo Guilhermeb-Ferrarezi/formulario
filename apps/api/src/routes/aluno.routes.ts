@@ -3,6 +3,6 @@ import { criarAlunoController } from "../controllers/aluno.controller";
 
 const router = Router();
 
-router.post("/", criarAlunoController);
+router.post("/alunos", criarAlunoController);
 
 export default router;
