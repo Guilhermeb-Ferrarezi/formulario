@@ -32,7 +32,7 @@ export function useFormulario() {
     }
 
     try {
-      const response = await fetch(`${API_URL}/alunos`, {
+      const response = await fetch(`${API_URL}/alunos/public`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

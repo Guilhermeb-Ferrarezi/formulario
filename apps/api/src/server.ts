@@ -15,7 +15,7 @@ app.use(cors({
 app.use(express.json());
 
 // ===== ROTAS DA API =====
-app.use("/api/alunos", alunoRouter);
+app.use("/api/alunos", alunoRouter); // Rotas protegidas e públicas
 app.use("/api/auth", authRouter);
 
 // Rota de health check
