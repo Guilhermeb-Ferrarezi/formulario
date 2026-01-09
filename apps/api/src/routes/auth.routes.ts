@@ -1,8 +1,8 @@
 import { Router } from "express";
 const router = Router();
 
-const USER = "admin";
-const PASS = "123456";
+const USER = process.env.DASHBOARD_USER;
+const PASS = process.env.DASHBOARD_PASS;
 
 router.post("/login", (req, res) => {
   console.log("📥 Body recebido:", req.body);

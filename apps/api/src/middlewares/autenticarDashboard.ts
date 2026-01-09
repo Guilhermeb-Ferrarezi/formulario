@@ -15,7 +15,7 @@ export function autenticarDashboard(req: Request, res: Response, next: NextFunct
   const [username, password] = credentials.split(":");
 
   // Usuário e senha do dashboard
-  if (username === "admin" && password === "123456") {
+  if (username === process.env.DASHBOARD_USER && password === process.env.DASHBOARD_PASS) {
     return next();
   } else {
     res.setHeader("WWW-Authenticate", 'Basic realm="Dashboard"');
