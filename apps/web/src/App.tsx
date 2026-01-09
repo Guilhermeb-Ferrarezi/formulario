@@ -15,10 +15,6 @@ export function App() {
           element={
             <div className="centro">
               <main>
-                <h1 className="titulo">
-                  Bem-vindo à Escola! <br />
-                  Cadastre-se
-                </h1>
                 <Formulario />
               </main>
             </div>

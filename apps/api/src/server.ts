@@ -4,7 +4,7 @@ import alunoRouter from "./routes/aluno.routes.js";
 import authRouter from "./routes/auth.routes.js";
 
 const app = express();
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = Number(process.env.PORT);
 
 // Middlewares
 app.use(cors({ 
