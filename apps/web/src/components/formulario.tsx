@@ -94,7 +94,6 @@ export function Formulario() {
               </p>
 
             )}
-            <pre>{JSON.stringify(mensagem, null, 2)}</pre>
 
 
             <button type="submit" className="cta">

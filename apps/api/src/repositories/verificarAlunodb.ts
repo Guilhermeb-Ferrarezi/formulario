@@ -1,28 +1,39 @@
 import { pool } from "../config/pool";
 
-export async function buscarAlunoPorEmail(email: string) {
-  const { rows } = await pool.query(
-    "SELECT * FROM alunos WHERE email = $1 LIMIT 1",
+/**
+ * Verifica se já existe aluno com este email
+ */
+export async function existeAlunoPorEmail(email: string): Promise<boolean> {
+  const { rowCount } = await pool.query(
+    "SELECT 1 FROM alunos WHERE email = $1 LIMIT 1",
     [email]
   );
 
-  return rows[0] || null;
+  return rowCount !== null && rowCount > 0;
 }
 
-export async function buscarAlunoPorCPF(cpf: string) {
-  const { rows } = await pool.query(
-    "SELECT * FROM alunos WHERE cpf = $1 LIMIT 1",
+/**
+ * Verifica se já existe aluno com este CPF
+ */
+export async function existeAlunoPorCPF(cpf: string): Promise<boolean> {
+  const { rowCount } = await pool.query(
+    "SELECT 1 FROM alunos WHERE cpf = $1 LIMIT 1",
     [cpf]
   );
 
-  return rows[0] || null;
+  return rowCount !== null && rowCount > 0;
 }
 
-export async function buscarAlunoPorWhatsapp(whatsapp: string) {
-  const { rows } = await pool.query(
-    "SELECT * FROM alunos WHERE whatsapp = $1 LIMIT 1",
+/**
+ * Verifica se já existe aluno com este WhatsApp
+ */
+export async function existeAlunoPorWhatsapp(
+  whatsapp: string
+): Promise<boolean> {
+  const { rowCount } = await pool.query(
+    "SELECT 1 FROM alunos WHERE whatsapp = $1 LIMIT 1",
     [whatsapp]
   );
 
-  return rows[0] || null;
+  return rowCount !== null && rowCount > 0;
 }
