@@ -95,7 +95,6 @@ export function Formulario() {
             )}
 
 
-
             <button type="submit" className="cta">
               Quero participar
             </button>

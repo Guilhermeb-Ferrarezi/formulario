@@ -4,12 +4,15 @@ import type { FormValues } from "../utils/validarFormulario";
 
 // 🔥 URL vinda do ambiente (Vite)
 const API_URL = import.meta.env.VITE_API_URL || "/api";
-
-export function useFormulario() {
-  const [mensagem, setMensagem] = useState<{
+type Mensagem = {
   texto: string;
   tipo: "sucesso" | "erro";
-    } | null>(null);
+} | null;
+
+
+
+export function useFormulario() {
+  const [mensagem, setMensagem] = useState<Mensagem>(null);
   const [values, setValues] = useState<FormValues>({
     nome: "",
     dataNascimento: "",
