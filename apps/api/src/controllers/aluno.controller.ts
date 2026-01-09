@@ -42,6 +42,6 @@ export async function criarAlunoController(req: Request, res: Response) {
     return res.status(201).json(result.rows[0]);
   } catch (erro) {
     console.error("❌ Erro banco:", erro);
-    return res.status(500).json({ erro: "Erro ao salvar aluno" });
+    return res.status(500).json({ erro: `Erro ao salvar aluno: ${erro}` });
   }
 }
