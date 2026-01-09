@@ -6,7 +6,10 @@ import type { FormValues } from "../utils/validarFormulario";
 const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 export function useFormulario() {
-  const [mensagem, setMensagem] = useState("");
+  const [mensagem, setMensagem] = useState<{
+  texto: string;
+  tipo: "sucesso" | "erro";
+    } | null>(null);
   const [values, setValues] = useState<FormValues>({
     nome: "",
     dataNascimento: "",
@@ -25,10 +28,13 @@ export function useFormulario() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setMensagem("");
+    setMensagem(null);
 
     if (!validarFormulario(values)) {
-      setMensagem("Preencha todos os campos.");
+      setMensagem({
+        texto: "Por favor, preencha todos os campos corretamente.",
+        tipo: "erro",
+      });
       return;
     }
 
@@ -43,6 +49,11 @@ export function useFormulario() {
 
       const data = await response.json();
 
+      setMensagem({
+        texto: data.mensagem,
+        tipo: response.ok ? "sucesso" : "erro"
+      });
+
       // ❌ Erro vindo do backend (CPF, email, whatsapp duplicado, etc)
       if (!response.ok) {
         setMensagem(data.erro || "Erro ao realizar cadastro");
@@ -50,10 +61,10 @@ export function useFormulario() {
       }
 
       // ✅ Sucesso
-      setMensagem("Cadastro realizado com sucesso!");
+      setMensagem({ texto: "Cadastro realizado com sucesso!", tipo: "sucesso" });
     } catch (error) {
       console.error(error);
-      setMensagem("Erro de conexão com o servidor");
+      setMensagem({ texto: "Erro de conexão com o servidor", tipo: "erro" });
     }
   }
 
