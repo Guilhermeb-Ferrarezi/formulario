@@ -1,27 +1,52 @@
 import { Router } from "express";
-import { pool } from "../config/pool";
 import { verificarToken } from "../middlewares/verificarToken";
 import { criarAlunoController } from "../controllers/aluno.controller";
+import { pool } from "../config/pool";
 
 const router = Router();
 
-// ===== ROTA PÚBLICA - Cadastro de alunos (sem autenticação) =====
-router.post("/public", criarAlunoController)
+/**
+ * ================================
+ * ROTA PÚBLICA
+ * ================================
+ * POST /alunos/public
+ * Cadastro de aluno SEM autenticação
+ * (usa o mesmo controller, logo mantém
+ * mensagens de CPF/email/whatsapp duplicados)
+ */
+router.post("/public", criarAlunoController);
 
-// ===== ROTAS PROTEGIDAS (requerem autenticação) =====
+/**
+ * ================================
+ * ROTAS PROTEGIDAS
+ * ================================
+ */
 
-// POST /alunos → criar aluno (protegido)
-router.post("/", verificarToken, criarAlunoController)
+// POST /alunos → criar aluno (com autenticação)
+router.post("/", verificarToken, criarAlunoController);
 
-
-// GET /alunos → listar todos os alunos (protegido)
+// GET /alunos → listar todos os alunos (com autenticação)
 router.get("/", verificarToken, async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM alunos");
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Erro ao buscar alunos:", err);
-    res.status(500).json({ erro: "Erro ao buscar alunos" });
+    const { rows } = await pool.query(`
+      SELECT
+        id,
+        nome,
+        data_nascimento,
+        whatsapp,
+        email,
+        cpf,
+        created_at
+      FROM alunos
+      ORDER BY created_at DESC
+    `);
+
+    return res.json(rows);
+  } catch (error) {
+    console.error("❌ Erro ao buscar alunos:", error);
+    return res.status(500).json({
+      erro: "Erro ao buscar alunos"
+    });
   }
 });
 
