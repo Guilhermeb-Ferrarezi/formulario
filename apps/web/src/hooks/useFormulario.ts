@@ -25,6 +25,7 @@ export function useFormulario() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setMensagem("");
 
     if (!validarFormulario(values)) {
       setMensagem("Preencha todos os campos.");
@@ -40,14 +41,19 @@ export function useFormulario() {
         body: JSON.stringify(values),
       });
 
+      const data = await response.json();
+
+      // ❌ Erro vindo do backend (CPF, email, whatsapp duplicado, etc)
       if (!response.ok) {
-        throw new Error("Erro na requisição");
+        setMensagem(data.erro || "Erro ao realizar cadastro");
+        return;
       }
 
+      // ✅ Sucesso
       setMensagem("Cadastro realizado com sucesso!");
     } catch (error) {
       console.error(error);
-      setMensagem("Erro: "); + (error instanceof Error ? error.message : "Erro desconhecido");
+      setMensagem("Erro de conexão com o servidor");
     }
   }
 
