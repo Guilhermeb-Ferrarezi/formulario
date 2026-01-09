@@ -92,7 +92,9 @@ export function Formulario() {
               <p className={`form-message ${mensagem.tipo}`}>
                 {mensagem.texto}
               </p>
+
             )}
+            <pre>{JSON.stringify(mensagem, null, 2)}</pre>
 
 
             <button type="submit" className="cta">
