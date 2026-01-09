@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import alunoRouter from "./routes/aluno.routes.js";
 import authRouter from "./routes/auth.routes.js";
+import { initConfig } from "./config/init.ts";  
 
 const app = express();
 const PORT = Number(process.env.PORT);
@@ -57,4 +58,11 @@ const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`   - POST /api/auth/login`);
   console.log(`   - GET  /api/alunos`);
   console.log(`   - POST /api/alunos`);
+});
+
+initConfig().then(() => {
+  console.log("✅ Configuração inicial concluída");
+}).catch((erro) => {
+  console.error("❌ Erro na configuração inicial:", erro);
+  process.exit(1);
 });
