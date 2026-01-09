@@ -60,6 +60,7 @@ export function Formulario() {
                 placeholder="000.000.000-00"
                 value={values.cpf}
                 onChange={handleChange}
+                maxLength={15}
                 required
               />
             </div>
