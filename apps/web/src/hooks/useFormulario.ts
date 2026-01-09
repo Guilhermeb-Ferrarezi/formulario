@@ -30,46 +30,52 @@ export function useFormulario() {
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setMensagem(null);
+  e.preventDefault();
+  setMensagem(null);
 
-    if (!validarFormulario(values)) {
+  if (!validarFormulario(values)) {
+    setMensagem({
+      texto: "Por favor, preencha todos os campos corretamente.",
+      tipo: "erro",
+    });
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/alunos/public`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+
+    const data = await response.json();
+
+    // ❌ erro vindo do backend
+    if (!response.ok) {
       setMensagem({
-        texto: "Por favor, preencha todos os campos corretamente.",
+        texto: data.erro || "Erro ao realizar cadastro",
         tipo: "erro",
       });
       return;
     }
 
-    try {
-      const response = await fetch(`${API_URL}/alunos/public`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
+    // ✅ sucesso
+    setMensagem({
+      texto: "Cadastro realizado com sucesso!",
+      tipo: "sucesso",
+    });
 
-      const data = await response.json();
-
-      setMensagem({
-        texto: data.mensagem,
-        tipo: response.ok ? "sucesso" : "erro"
-      });
-
-      // ❌ Erro vindo do backend (CPF, email, whatsapp duplicado, etc)
-      if (!response.ok) {
-        setMensagem(data.erro || "Erro ao realizar cadastro");
-        return;
-      }
-
-      // ✅ Sucesso
-      setMensagem({ texto: "Cadastro realizado com sucesso!", tipo: "sucesso" });
-    } catch (error) {
-      console.error(error);
-      setMensagem({ texto: "Erro de conexão com o servidor", tipo: "erro" });
-    }
+  } catch (error) {
+    console.error(error);
+    setMensagem({
+      texto: "Erro de conexão com o servidor",
+      tipo: "erro",
+    });
   }
+}
+
 
   return {
     values,
