@@ -88,7 +88,7 @@ export function Formulario() {
               />
             </div>
 
-            {mensagem && <p className="form-message">{mensagem}</p>}
+            {mensagem && <p className="form-message">{mensagem.tipo}</p>}
 
             <button type="submit" className="cta">
               Quero participar
