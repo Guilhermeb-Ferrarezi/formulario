@@ -2,6 +2,12 @@ import { Router } from "express";
 import { verificarToken } from "../middlewares/verificarToken";
 import { criarAlunoController } from "../controllers/aluno.controller";
 import { pool } from "../config/pool";
+import { deletarAlunoController } from "../controllers/deletarAluno.controller";
+import { atualizarAlunoController } from "../controllers/atualizarAluno.controller";
+
+// DELETE /alunos/:id
+
+
 
 const router = Router();
 
@@ -49,5 +55,10 @@ router.get("/", verificarToken, async (req, res) => {
     });
   }
 });
+
+router.delete("/:id", verificarToken, deletarAlunoController);
+
+// PUT /alunos/:id
+router.put("/:id", verificarToken, atualizarAlunoController);
 
 export default router;
