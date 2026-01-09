@@ -47,7 +47,7 @@ export function useFormulario() {
       setMensagem("Cadastro realizado com sucesso!");
     } catch (error) {
       console.error(error);
-      setMensagem("Erro ao enviar os dados.");
+      setMensagem("Erro: "); + (error instanceof Error ? error.message : "Erro desconhecido");
     }
   }
 
