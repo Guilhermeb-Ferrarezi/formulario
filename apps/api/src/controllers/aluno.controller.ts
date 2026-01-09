@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
 import { pool } from "../config/pool";
 import {
-  buscarAlunoPorCPF,
-  buscarAlunoPorEmail,
-  buscarAlunoPorWhatsapp
+  existeAlunoPorCPF,
+  existeAlunoPorEmail,
+  existeAlunoPorWhatsapp
 } from "../repositories/verificarAlunodb";
 
 export async function criarAlunoController(
@@ -22,25 +22,16 @@ export async function criarAlunoController(
 
   try {
     // 2️⃣ Verificações de duplicidade
-    if (await buscarAlunoPorEmail(email)) {
-      return res.status(409).json({
-        mensagem: "Email já cadastrado",
-        tipo: "erro"
-      });
+    if (await existeAlunoPorEmail(email)) {
+      return res.status(409).json({ erro: "Email já cadastrado" });
     }
 
-    if (await buscarAlunoPorCPF(cpf)) {
-      return res.status(409).json({
-        mensagem: "CPF já cadastrado",
-        tipo: "erro"
-      });
+    if (await existeAlunoPorCPF(cpf)) {
+      return res.status(409).json({ erro: "CPF já cadastrado" });
     }
 
-    if (await buscarAlunoPorWhatsapp(whatsapp)) {
-      return res.status(409).json({
-        mensagem: "WhatsApp já cadastrado",
-        tipo: "erro"
-      });
+    if (await existeAlunoPorWhatsapp(whatsapp)) {
+      return res.status(409).json({ erro: "WhatsApp já cadastrado" });
     }
 
     // 3️⃣ Normaliza data
