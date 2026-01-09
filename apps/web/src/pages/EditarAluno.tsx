@@ -15,7 +15,11 @@ export default function EditarAluno() {
   const navigate = useNavigate();
 
   const [aluno, setAluno] = useState<Aluno | null>(null);
-  const [mensagem, setMensagem] = useState("");
+  const [mensagem, setMensagem] = useState<{
+  texto: string;
+  tipo: "sucesso" | "erro";
+    } | null>(null);
+
   const [carregando, setCarregando] = useState(true);
 
   // ======================
@@ -39,7 +43,10 @@ export default function EditarAluno() {
       );
 
       if (!response.ok) {
-        setMensagem("Erro ao carregar aluno");
+        setMensagem({
+            texto: "Erro ao buscar dados do aluno",
+            tipo: "erro",
+        })
         return;
       }
 
@@ -47,7 +54,10 @@ export default function EditarAluno() {
       setAluno(data);
     } catch (error) {
       console.error(error);
-      setMensagem("Erro ao conectar com o servidor");
+      setMensagem({
+        texto: "Erro ao conectar com o servidor",
+        tipo: "erro",
+      });
     } finally {
       setCarregando(false);
     }
@@ -95,7 +105,10 @@ export default function EditarAluno() {
       navigate("/dashboard");
     } catch (error) {
       console.error(error);
-      setMensagem("Erro ao conectar com o servidor");
+      setMensagem({
+        texto: "Erro ao conectar com o servidor",
+        tipo: "erro",
+      });
     }
   };
 
@@ -106,7 +119,7 @@ export default function EditarAluno() {
     <div className="form-container">
       <h1>✏️ Editar Aluno</h1>
 
-      {mensagem && <p className="erro-form">{mensagem}</p>}
+      {mensagem && <p className="erro-form">{mensagem.texto}</p>}
 
       <form onSubmit={handleSubmit}>
         <input

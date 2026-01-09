@@ -337,3 +337,14 @@ body {
   }
 }
 
+.mensagem {
+  font-weight: 600;
+}
+
+.mensagem.erro {
+  color: #dc3545;
+}
+.mensagem.sucesso {
+  color: #28a745;
+}
+
