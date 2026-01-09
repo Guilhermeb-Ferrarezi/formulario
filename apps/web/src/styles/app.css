@@ -316,10 +316,27 @@ body {
 
 /* Mensagem de retorno do submit */
 .form-message {
-  margin: 8px 0;
-  font-weight: 600;
-  color: #2474f6;
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  text-align: center;
 }
+
+/* SUCESSO */
+.form-message.sucesso {
+  background-color: #e6f9ee;
+  color: #1e7f43;
+  border: 1px solid #2ecc71;
+}
+
+/* ERRO */
+.form-message.erro {
+  background-color: #fdecea;
+  color: #c0392b;
+  border: 1px solid #e74c3c;
+}
+
 
 /* Responsividade Formulário */
 @media (max-width: 900px) {
