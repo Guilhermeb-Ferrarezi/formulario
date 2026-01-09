@@ -119,7 +119,17 @@ export default function EditarAluno() {
     <div className="form-container">
       <h1>✏️ Editar Aluno</h1>
 
-      {mensagem && <p className="erro-form">{mensagem.texto}</p>}
+      {mensagem && (
+        <p
+    className={
+      mensagem.tipo === "erro"
+        ? "form-message erro"
+        : "form-message sucesso"
+    }
+    >
+      {mensagem.texto}
+    </p>
+        )}
 
       <form onSubmit={handleSubmit}>
         <input
