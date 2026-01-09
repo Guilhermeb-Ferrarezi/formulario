@@ -101,9 +101,7 @@ export default function Dashboard() {
   // EDITAR ALUNO (por enquanto)
   // ======================
   const editarAluno = (aluno: Aluno) => {
-    // Próximo passo: abrir modal
-    alert(`Editar aluno ID ${aluno.id}`);
-    console.log("✏️ Dados do aluno:", aluno);
+    navigate(`/alunos/editar/${aluno.id}`);
   };
 
   // ======================

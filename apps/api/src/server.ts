@@ -2,7 +2,9 @@ import express from "express";
 import cors from "cors";
 import alunoRouter from "./routes/aluno.routes.js";
 import authRouter from "./routes/auth.routes.js";
-import { initConfig } from "./config/init.ts";  
+import { initConfig } from "./config/init.ts";
+import alunoRoutes from "./routes/aluno.routes";
+
 
 const app = express();
 const PORT = Number(process.env.PORT);
@@ -37,6 +39,8 @@ app.get("/", (_req, res) => {
     endpoints: ["/api/alunos", "/api/auth"]
   });
 });
+
+app.use("/api/alunos", alunoRoutes);
 
 // Tratamento de sinais - IGNORA SIGTERM para não encerrar
 process.on("SIGTERM", () => {
