@@ -1,5 +1,9 @@
 /* src/styles/login-matrix.css */
 
+body{
+  display: inline;
+}
+
 :root {
   --st-red: #e4021a;
   --st-black: #000000;
