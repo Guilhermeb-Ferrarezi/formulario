@@ -40,7 +40,7 @@ export function Formulario() {
                 onChange={handleChange}
                 required
               />
-            </div>
+            </div>s
 
             <div className="field">
               <label>Data de nascimento</label>
@@ -60,6 +60,7 @@ export function Formulario() {
                 placeholder="000.000.000-00"
                 value={values.cpf}
                 onChange={handleChange}
+                min-Length={11}
                 maxLength={15}
                 required
               />
@@ -73,6 +74,8 @@ export function Formulario() {
                 placeholder="(00) 00000-0000"
                 value={values.whatsapp}
                 onChange={handleChange}
+                minLength={10}
+                maxLength={14}
                 required
               />
             </div>
@@ -85,6 +88,7 @@ export function Formulario() {
                 placeholder="seuemail@dominio.com"
                 value={values.email}
                 onChange={handleChange}
+                maxLength={30}
                 required
               />
             </div>
