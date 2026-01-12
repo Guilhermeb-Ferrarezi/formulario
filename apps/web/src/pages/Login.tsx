@@ -16,13 +16,18 @@ export function Login() {
 
   useEffect(() => {
     if (!canvasRef.current) return;
+
     const controller = startMatrixRain(canvasRef.current, {
-      fontSize: 16,
-      opacity: 0.08,
-      speed: 1,
+      fontSize: 18,
+      interval: 70,
+      opacity: 0.04,
+      charset: "PROGRAMACAOWEB",
     });
+
     return () => controller.stop();
   }, []);
+
+
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
@@ -74,7 +79,7 @@ export function Login() {
             </div>
 
             <div>
-              <div className="st-title">JOVEM TECH RP</div>
+              <div className="st-title">Santos Tech</div>
               <div className="st-subtitle">Faça login</div>
             </div>
           </div>

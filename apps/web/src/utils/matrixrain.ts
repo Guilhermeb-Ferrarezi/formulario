@@ -4,122 +4,106 @@ export interface MatrixRainController {
 
 export interface MatrixRainOptions {
   fontSize?: number;
+  interval?: number;
   opacity?: number;
-  speed?: number;
+  charset?: string;
   colors?: readonly string[];
+  headColor?: string;
 }
 
-const DEFAULT_FONT_SIZE = 16;
-const DEFAULT_OPACITY = 0.08;
-const DEFAULT_SPEED = 1;
-
-const DEFAULT_COLORS: readonly string[] = [
-  "#ffffff",
-  "#e4021a",
-  "#9bbcff",
-];
-
-const MATRIX_CHARS =
-  "アァカサタナハマヤャラワガザダバパ" +
-  "イィキシチニヒミリヰギジヂビピ" +
-  "ウゥクスツヌフムユュルグズヅブプ" +
-  "エェケセテネヘメレヱゲゼデベペ" +
-  "オォコソトノホモヨョロヲゴゾドボポヴン" +
-  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const DEFAULTS = {
+  fontSize: 16,
+  interval: 70,
+  opacity: 0.05,
+  charset: "PROGRAMACAOWEB0123456789",
+  colors: ["#00ff9c", "#00cc7a", "#00aaff", "#ffffff", "#e4021a"] as const,
+  headColor: "#eafff5",
+};
 
 export function startMatrixRain(
   canvas: HTMLCanvasElement,
   options: MatrixRainOptions = {}
 ): MatrixRainController {
-  const ctxNullable = canvas.getContext("2d");
-  if (ctxNullable === null) {
-    return { stop: () => {} };
+  const ctx = canvas.getContext("2d");
+  if (ctx === null) {
+    throw new Error("Canvas 2D not supported");
   }
 
-  const ctx: CanvasRenderingContext2D = ctxNullable;
-
-  const fontSize = options.fontSize ?? DEFAULT_FONT_SIZE;
-  const fadeOpacity = options.opacity ?? DEFAULT_OPACITY;
-  const speed = options.speed ?? DEFAULT_SPEED;
-  const colors = options.colors ?? DEFAULT_COLORS;
-
-  const dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
+  const {
+    fontSize,
+    interval,
+    opacity,
+    charset,
+    colors,
+    headColor,
+  } = { ...DEFAULTS, ...options };
 
   let width = 0;
   let height = 0;
   let columns = 0;
   let drops: number[] = [];
-  let animationId: number | null = null;
-  let running = true;
+  let chars: string[] = [];
+  let timer: number | null = null;
+
+  function resize(): void {
+    width = window.innerWidth;
+    height = window.innerHeight;
+
+    canvas.width = width;
+    canvas.height = height;
+
+    ctx.font = `${fontSize}px monospace`;
+    ctx.textBaseline = "top";
+
+    columns = Math.floor(width / fontSize);
+    drops = [];
+    chars = [];
+
+    for (let i = 0; i < columns; i++) {
+      drops[i] = Math.floor(Math.random() * (height / fontSize));
+      chars[i] = randomChar();
+    }
+  }
 
   function randomChar(): string {
-    return MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
+    return charset[Math.floor(Math.random() * charset.length)];
   }
 
   function randomColor(): string {
     return colors[Math.floor(Math.random() * colors.length)];
   }
 
-  function resize(): void {
-    const rect = canvas.getBoundingClientRect();
-
-    width = Math.floor(rect.width);
-    height = Math.floor(rect.height);
-
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    columns = Math.floor(width / fontSize);
-    drops = Array.from({ length: columns }, () =>
-      Math.floor(Math.random() * height)
-    );
-  }
-
-  function drawFrame(): void {
-    if (!running) return;
-
-    ctx.fillStyle = `rgba(0,0,0,${fadeOpacity})`;
+  function draw(): void {
+    ctx.fillStyle = `rgba(0,0,0,${opacity})`;
     ctx.fillRect(0, 0, width, height);
 
-    ctx.font = `${fontSize}px monospace`;
-
     for (let i = 0; i < columns; i++) {
-      const char = randomChar();
       const x = i * fontSize;
-      const y = drops[i];
+      const y = drops[i] * fontSize;
+
+      ctx.fillStyle = headColor;
+      ctx.fillText(chars[i], x, y);
 
       ctx.fillStyle = randomColor();
-      ctx.fillText(char, x, y);
+      ctx.fillText(chars[i], x, y - fontSize);
 
-      if (y > height && Math.random() > 0.975) {
+      drops[i]++;
+
+      if (y > height) {
         drops[i] = 0;
-      } else {
-        drops[i] += fontSize * speed;
+        chars[i] = randomChar();
       }
     }
-
-    animationId = requestAnimationFrame(drawFrame);
   }
 
   resize();
-
-  const handleResize = () => resize();
-  window.addEventListener("resize", handleResize);
-
-  ctx.fillStyle = "rgba(0,0,0,0.08)";
-  ctx.fillRect(0, 0, width, height);
-
-  animationId = requestAnimationFrame(drawFrame);
+  window.addEventListener("resize", resize);
+  timer = window.setInterval(draw, interval);
 
   return {
     stop(): void {
-      running = false;
-      if (animationId !== null) {
-        cancelAnimationFrame(animationId);
-      }
-      window.removeEventListener("resize", handleResize);
+      if (timer !== null) clearInterval(timer);
+      window.removeEventListener("resize", resize);
     },
   };
 }
