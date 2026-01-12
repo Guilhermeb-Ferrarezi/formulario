@@ -44,6 +44,7 @@
 
 .st-login-shell {
   position: relative;
+  width: 100%;
   z-index: 2;
   min-height: 100vh;
   display: grid;
@@ -189,7 +190,6 @@
 }
 
 .st-meta {
-  display: flex;
   justify-content: center;
   margin-top: 4px;
 }
