@@ -21,7 +21,6 @@ export function Login() {
       fontSize: 18,
       interval: 70,
       opacity: 0.04,
-      charset: "PROGRAMACAOWEB",
     });
 
     return () => controller.stop();

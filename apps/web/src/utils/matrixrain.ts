@@ -6,44 +6,28 @@ export interface MatrixRainOptions {
   fontSize?: number;
   interval?: number;
   opacity?: number;
-  charset?: string;
-  colors?: readonly string[];
-  headColor?: string;
 }
-
-const DEFAULTS = {
-  fontSize: 16,
-  interval: 70,
-  opacity: 0.05,
-  charset: "PROGRAMACAOWEB0123456789",
-  colors: ["#00ff9c", "#00cc7a", "#00aaff", "#ffffff", "#e4021a"] as const,
-  headColor: "#eafff5",
-};
 
 export function startMatrixRain(
   canvas: HTMLCanvasElement,
   options: MatrixRainOptions = {}
 ): MatrixRainController {
-  const ctx = canvas.getContext("2d");
-  if (ctx === null) {
-    throw new Error("Canvas 2D not supported");
-  }
+  const ctx = canvas.getContext("2d")!;
 
-  const {
-    fontSize,
-    interval,
-    opacity,
-    charset,
-    colors,
-    headColor,
-  } = { ...DEFAULTS, ...options };
+  const fontSize = options.fontSize ?? 18;
+  const interval = options.interval ?? 70;
+  const opacity = options.opacity ?? 0.06;
+
+  const charset = "PROGRAMACAOWEB0123456789";
+  const colors = ["#00ff9c", "#00cc7a", "#00aaff", "#ffffff", "#e4021a"];
+  const headColor = "#eafff5";
 
   let width = 0;
   let height = 0;
   let columns = 0;
   let drops: number[] = [];
   let chars: string[] = [];
-  let timer: number | null = null;
+  let timer: number;
 
   function resize(): void {
     width = window.innerWidth;
@@ -56,21 +40,13 @@ export function startMatrixRain(
     ctx.textBaseline = "top";
 
     columns = Math.floor(width / fontSize);
-    drops = [];
-    chars = [];
+    drops = new Array(columns);
+    chars = new Array(columns);
 
     for (let i = 0; i < columns; i++) {
       drops[i] = Math.floor(Math.random() * (height / fontSize));
-      chars[i] = randomChar();
+      chars[i] = charset[Math.floor(Math.random() * charset.length)];
     }
-  }
-
-  function randomChar(): string {
-    return charset[Math.floor(Math.random() * charset.length)];
-  }
-
-  function randomColor(): string {
-    return colors[Math.floor(Math.random() * colors.length)];
   }
 
   function draw(): void {
@@ -84,14 +60,14 @@ export function startMatrixRain(
       ctx.fillStyle = headColor;
       ctx.fillText(chars[i], x, y);
 
-      ctx.fillStyle = randomColor();
+      ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
       ctx.fillText(chars[i], x, y - fontSize);
 
       drops[i]++;
 
       if (y > height) {
         drops[i] = 0;
-        chars[i] = randomChar();
+        chars[i] = charset[Math.floor(Math.random() * charset.length)];
       }
     }
   }
@@ -101,8 +77,8 @@ export function startMatrixRain(
   timer = window.setInterval(draw, interval);
 
   return {
-    stop(): void {
-      if (timer !== null) clearInterval(timer);
+    stop() {
+      clearInterval(timer);
       window.removeEventListener("resize", resize);
     },
   };
