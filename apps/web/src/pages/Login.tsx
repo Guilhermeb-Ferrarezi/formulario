@@ -3,7 +3,6 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { startMatrixRain } from "../utils/matrixrain";
 import "../styles/login-matrix.css";
-import logo from "../assets/logo.png";
 
 export function Login() {
   const [username, setUsername] = useState("");
@@ -72,7 +71,7 @@ export function Login() {
         <div className={`st-card ${exiting ? "st-exit" : ""}`}>
           <div className="st-brand">
             <div className="st-logo" aria-label="Logo temporária Santos Tech">
-                  <img src={logo} alt="Santos Tech" />
+                  <img src="assets/logo.png" alt="Santos Tech" />
             </div>
 
             <div>
