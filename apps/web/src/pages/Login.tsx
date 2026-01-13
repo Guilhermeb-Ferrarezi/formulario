@@ -71,7 +71,7 @@ export function Login() {
         <div className={`st-card ${exiting ? "st-exit" : ""}`}>
           <div className="st-brand">
             <div className="st-logo" aria-label="Logo temporária Santos Tech">
-                  <img src="assets/logo.png" alt="Santos Tech" />
+                  <img src="./assets/logo.png" alt="Santos Tech" />
             </div>
 
             <div>
