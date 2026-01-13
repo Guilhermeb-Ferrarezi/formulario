@@ -1,6 +1,6 @@
 /* src/styles/login-matrix.css */
 
-body{
+body {
   display: inline;
 }
 
@@ -116,6 +116,7 @@ body{
 .st-logo {
   width: 74px;
   height: 74px;
+
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.10);
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -123,6 +124,11 @@ body{
   display: grid;
   place-items: center;
   overflow: hidden;
+
+  img {
+    max-width: 64px;
+    max-height: 64px;
+  }
 }
 
 /* Logo temporária: “ST” */

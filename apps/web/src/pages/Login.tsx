@@ -71,10 +71,7 @@ export function Login() {
         <div className={`st-card ${exiting ? "st-exit" : ""}`}>
           <div className="st-brand">
             <div className="st-logo" aria-label="Logo temporária Santos Tech">
-              {/* Troque depois por:
-                  <img src="/caminho/da/logo.svg" alt="Santos Tech" />
-               */}
-              <span>ST</span>
+                  <img src="/src/assets/logo.png" alt="Santos Tech" />
             </div>
 
             <div>
@@ -139,11 +136,6 @@ export function Login() {
 
             {erro && <div className="st-error">{erro}</div>}
 
-            <div className="st-meta">
-              <a className="st-link" href="/esqueceu-senha">
-                Esqueceu sua senha?
-              </a>
-            </div>
 
             <button className="st-btn" type="submit" disabled={carregando || exiting}>
               {carregando ? (
