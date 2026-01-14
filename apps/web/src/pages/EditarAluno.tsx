@@ -167,8 +167,8 @@ export default function EditarAluno() {
           placeholder="CPF"
         />
 
-        <button type="submit">Salvar alterações</button>
-        <button type="button" onClick={() => navigate("/dashboard")}>
+        <button type="submit" className="botao-salvar">Salvar alterações</button>
+        <button type="button" className="botao-cancelar" onClick={() => navigate("/dashboard")}>
           Cancelar
         </button>
       </form>

@@ -1,10 +1,10 @@
-import "./styles/app.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Formulario } from "./components/formulario";
 import { Login } from "./pages/Login";
 import { ProtectedRoute } from "./components/ProtectedRoutes";
 import Dashboard from "./pages/Dashboard";
 import EditarAluno from "./pages/EditarAluno";
+
 
 export function App() {
   return (

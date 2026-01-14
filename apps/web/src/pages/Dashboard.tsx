@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../styles/dashboard.css"
+import "../styles/app.css"
 
 interface Aluno {
   id: number;
@@ -116,70 +118,75 @@ export default function Dashboard() {
   // RENDER
   // ======================
   return (
-    <div className="dashboard-container">
-      <header className="dashboard-header">
-        <h1>📊 Dashboard Administrativo</h1>
-        <button onClick={handleLogout} className="botao-sair">
-          Sair
-        </button>
-      </header>
+    <div className="Tudo">
+      <div className="dashboard-container">
+        <header className="dashboard-header">
+          <h1>📊 Dashboard Administrativo</h1>
+          <button onClick={handleLogout} className="botao-sair">
+            Sair
+          </button>
+          <button className="botao-home" onClick={() => navigate("https://painel-adm.santos-tech.com/home")}>
+            Voltar para o Home
+          </button>
+        </header>
 
-      {carregando && <p>Carregando...</p>}
-      {erro && <p className="erro-dashboard">{erro}</p>}
+        {carregando && <p>Carregando...</p>}
+        {erro && <p className="erro-dashboard">{erro}</p>}
 
-      {!carregando && !erro && (
-        <>
-          <h2>Total de alunos: {alunos.length}</h2>
+        {!carregando && !erro && (
+          <>
+            <h2>Total de alunos: {alunos.length}</h2>
 
-          <div className="tabela-container">
-            <table className="tabela-alunos">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Nome</th>
-                  <th>Data Nasc.</th>
-                  <th>WhatsApp</th>
-                  <th>Email</th>
-                  <th>CPF</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {alunos.map((aluno) => (
-                  <tr key={aluno.id}>
-                    <td>{aluno.id}</td>
-                    <td>{aluno.nome}</td>
-                    <td>
-                      {new Date(aluno.data_nascimento).toLocaleDateString(
-                        "pt-BR"
-                      )}
-                    </td>
-                    <td>{aluno.whatsapp}</td>
-                    <td>{aluno.email}</td>
-                    <td>{aluno.cpf}</td>
-                    <td style={{ display: "flex", gap: "8px" }}>
-                      <button
-                        onClick={() => editarAluno(aluno)}
-                        className="botao-editar"
-                      >
-                        ✏️ Editar
-                      </button>
-
-                      <button
-                        onClick={() => deletarAluno(aluno.id)}
-                        className="botao-excluir"
-                      >
-                        🗑️ Excluir
-                      </button>
-                    </td>
+            <div className="tabela-container">
+              <table className="tabela-alunos">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Data Nasc.</th>
+                    <th>WhatsApp</th>
+                    <th>Email</th>
+                    <th>CPF</th>
+                    <th>Ações</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </>
-      )}
+                </thead>
+
+                <tbody>
+                  {alunos.map((aluno) => (
+                    <tr key={aluno.id}>
+                      <td>{aluno.id}</td>
+                      <td>{aluno.nome}</td>
+                      <td>
+                        {new Date(aluno.data_nascimento).toLocaleDateString(
+                          "pt-BR"
+                        )}
+                      </td>
+                      <td>{aluno.whatsapp}</td>
+                      <td>{aluno.email}</td>
+                      <td>{aluno.cpf}</td>
+                      <td style={{ display: "flex", gap: "8px" }}>
+                        <button
+                          onClick={() => editarAluno(aluno)}
+                          className="botao-editar"
+                        >
+                          Editar
+                        </button>
+
+                        <button
+                          onClick={() => deletarAluno(aluno.id)}
+                          className="botao-excluir"
+                        >
+                          Excluir
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }

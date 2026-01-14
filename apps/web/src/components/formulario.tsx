@@ -1,4 +1,5 @@
 import { useFormulario } from "../hooks/useFormulario";
+import "../styles/app.css"
 
 export function Formulario() {
   const { values, mensagem, handleChange, handleSubmit } = useFormulario();
