@@ -275,3 +275,52 @@ body {
   color: #28a745;
 }
 
+/* ===== SELETOR DE PARENTESCO ===== */
+.parentesco-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.parentesco-option {
+  padding: 12px 16px;
+  border: 2px solid #dcdce6;
+  border-radius: 12px;
+  background: #fff;
+  color: #1c1c1c;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.parentesco-option:hover {
+  border-color: #fb5b31;
+  background: #fff5f3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(251, 91, 49, 0.15);
+}
+
+.parentesco-option.selected {
+  border-color: #fb5b31;
+  background: linear-gradient(135deg, #fb5b31 0%, #ff7a50 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(251, 91, 49, 0.3);
+}
+
+.parentesco-option.selected:hover {
+  background: linear-gradient(135deg, #e54a21 0%, #fb5b31 100%);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 500px) {
+  .parentesco-selector {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+

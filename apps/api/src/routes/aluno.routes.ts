@@ -8,7 +8,18 @@ const router = Router();
    ROTA PÚBLICA — CADASTRAR ALUNO
 ====================================================== */
 router.post("/public", async (req, res) => {
-  const { nome, dataNascimento, whatsapp, email, cpf } = req.body;
+  const {
+    nome,
+    dataNascimento,
+    whatsapp,
+    email,
+    cpf,
+    responsavelNome,
+    responsavelGrauParentesco,
+    responsavelWhatsapp,
+    responsavelCpf,
+    responsavelEmail
+  } = req.body;
 
   if (!nome || !dataNascimento || !whatsapp || !email || !cpf) {
     return res.status(400).json({ erro: "Dados obrigatórios faltando" });
@@ -21,11 +32,26 @@ router.post("/public", async (req, res) => {
 
     const result = await pool.query(
       `
-      INSERT INTO alunos (nome, data_nascimento, whatsapp, email, cpf)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO alunos (
+        nome, data_nascimento, whatsapp, email, cpf,
+        responsavel_nome, responsavel_grau_parentesco,
+        responsavel_whatsapp, responsavel_cpf, responsavel_email
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING *
       `,
-      [nome, dataFormatada, whatsapp, email, cpf]
+      [
+        nome,
+        dataFormatada,
+        whatsapp,
+        email,
+        cpf,
+        responsavelNome || null,
+        responsavelGrauParentesco || null,
+        responsavelWhatsapp || null,
+        responsavelCpf || null,
+        responsavelEmail || null
+      ]
     );
 
     return res.status(201).json(result.rows[0]);
@@ -88,7 +114,18 @@ router.get("/:id", verificarToken, async (req, res) => {
 // ATUALIZAR ALUNO
 router.put("/:id", verificarToken, async (req, res) => {
   const { id } = req.params;
-  const { nome, data_nascimento, whatsapp, email, cpf } = req.body;
+  const {
+    nome,
+    data_nascimento,
+    whatsapp,
+    email,
+    cpf,
+    responsavel_nome,
+    responsavel_grau_parentesco,
+    responsavel_whatsapp,
+    responsavel_cpf,
+    responsavel_email
+  } = req.body;
 
   if (!nome || !data_nascimento || !whatsapp || !email || !cpf) {
     return res.status(400).json({ erro: "Dados obrigatórios faltando" });
@@ -102,11 +139,28 @@ router.put("/:id", verificarToken, async (req, res) => {
           data_nascimento = $2,
           whatsapp = $3,
           email = $4,
-          cpf = $5
-      WHERE id = $6
+          cpf = $5,
+          responsavel_nome = $6,
+          responsavel_grau_parentesco = $7,
+          responsavel_whatsapp = $8,
+          responsavel_cpf = $9,
+          responsavel_email = $10
+      WHERE id = $11
       RETURNING *
       `,
-      [nome, data_nascimento, whatsapp, email, cpf, id]
+      [
+        nome,
+        data_nascimento,
+        whatsapp,
+        email,
+        cpf,
+        responsavel_nome || null,
+        responsavel_grau_parentesco || null,
+        responsavel_whatsapp || null,
+        responsavel_cpf || null,
+        responsavel_email || null,
+        id
+      ]
     );
 
     if (result.rowCount === 0) {

@@ -1,8 +1,22 @@
 import { useFormulario } from "../hooks/useFormulario";
+import { useMemo } from "react";
 import "../styles/app.css"
 
 export function Formulario() {
   const { values, mensagem, handleChange, handleSubmit } = useFormulario();
+
+  // Calcular se é menor de idade
+  const ehMenorDeIdade = useMemo(() => {
+    if (!values.dataNascimento) return false;
+    const hoje = new Date();
+    const nascimento = new Date(values.dataNascimento);
+    let idade = hoje.getFullYear() - nascimento.getFullYear();
+    const mes = hoje.getMonth() - nascimento.getMonth();
+    if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+      idade--;
+    }
+    return idade < 18;
+  }, [values.dataNascimento]);
 
   return (
     <header>
@@ -41,7 +55,7 @@ export function Formulario() {
                 onChange={handleChange}
                 required
               />
-            </div>s
+            </div>
 
             <div className="field">
               <label>Data de nascimento</label>
@@ -93,6 +107,105 @@ export function Formulario() {
                 required
               />
             </div>
+
+            {/* Seção de dados do responsável (se menor de 18 anos) */}
+            {ehMenorDeIdade && (
+              <>
+                <div style={{ marginTop: "2rem", marginBottom: "1rem" }}>
+                  <h3 style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "0.5rem" }}>
+                    Dados do Responsável
+                  </h3>
+                  <p style={{ fontSize: "0.9rem", color: "#666" }}>
+                    Como o candidato é menor de idade, precisamos dos dados do responsável legal.
+                  </p>
+                </div>
+
+                <div className="field">
+                  <label>Nome completo do responsável</label>
+                  <input
+                    name="responsavelNome"
+                    placeholder="Digite o nome completo"
+                    value={values.responsavelNome}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="field">
+                  <label>Grau de parentesco</label>
+                  <div className="parentesco-selector">
+                    <button
+                      type="button"
+                      className={`parentesco-option ${values.responsavelGrauParentesco === 'Pai' ? 'selected' : ''}`}
+                      onClick={() => handleChange({ target: { name: 'responsavelGrauParentesco', value: 'Pai' } } as any)}
+                    >
+                      Pai
+                    </button>
+                    <button
+                      type="button"
+                      className={`parentesco-option ${values.responsavelGrauParentesco === 'Mãe' ? 'selected' : ''}`}
+                      onClick={() => handleChange({ target: { name: 'responsavelGrauParentesco', value: 'Mãe' } } as any)}
+                    >
+                      Mãe
+                    </button>
+                    <button
+                      type="button"
+                      className={`parentesco-option ${values.responsavelGrauParentesco === 'Tutor(a)' ? 'selected' : ''}`}
+                      onClick={() => handleChange({ target: { name: 'responsavelGrauParentesco', value: 'Tutor(a)' } } as any)}
+                    >
+                      Tutor(a)
+                    </button>
+                    <button
+                      type="button"
+                      className={`parentesco-option ${values.responsavelGrauParentesco === 'Avô/Avó' ? 'selected' : ''}`}
+                      onClick={() => handleChange({ target: { name: 'responsavelGrauParentesco', value: 'Avô/Avó' } } as any)}
+                    >
+                      Avô/Avó
+                    </button>
+                  </div>
+                </div>
+
+                <div className="field">
+                  <label>WhatsApp do responsável</label>
+                  <input
+                    type="tel"
+                    name="responsavelWhatsapp"
+                    placeholder="(00) 00000-0000"
+                    value={values.responsavelWhatsapp}
+                    onChange={handleChange}
+                    minLength={10}
+                    maxLength={14}
+                    required
+                  />
+                </div>
+
+                <div className="field">
+                  <label>CPF do responsável</label>
+                  <input
+                    name="responsavelCpf"
+                    placeholder="000.000.000-00"
+                    value={values.responsavelCpf}
+                    onChange={handleChange}
+                    minLength={11}
+                    maxLength={15}
+                    required
+                  />
+                </div>
+
+                <div className="field">
+                  <label>E-mail do responsável</label>
+                  <input
+                    type="email"
+                    name="responsavelEmail"
+                    placeholder="email@dominio.com"
+                    value={values.responsavelEmail}
+                    onChange={handleChange}
+                    maxLength={30}
+                    required
+                  />
+                </div>
+              </>
+            )}
 
             {mensagem && (
               <p className={`form-message ${mensagem.tipo}`}>
