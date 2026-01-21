@@ -1,24 +1,22 @@
 import express from "express";
 import cors from "cors";
-import alunoRouter from "./routes/aluno.routes.js";
+import alunoRoutes from "./routes/aluno.routes";
 import authRouter from "./routes/auth.routes.js";
 import { initConfig } from "./config/init.ts";
-import alunoRoutes from "./routes/aluno.routes";
-
 
 const app = express();
 const PORT = Number(process.env.PORT);
 
 // Middlewares
-app.use(cors({ 
-  credentials: true, 
+app.use(cors({
+  credentials: true,
   origin: true,
-  allowedHeaders: ['Content-Type', 'Authorization'] // ADICIONE ISSO
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 
 // ===== ROTAS DA API =====
-app.use("/api/alunos", alunoRouter); // Rotas protegidas e públicas
+app.use("/api/alunos", alunoRoutes); // Rotas protegidas e públicas
 app.use("/api/auth", authRouter);
 
 // Rota de health check
@@ -33,14 +31,12 @@ app.get("/test", (_req, res) => {
 
 // Rota raiz
 app.get("/", (_req, res) => {
-  res.json({ 
+  res.json({
     message: "API Santos Tech",
     health: "/health",
     endpoints: ["/api/alunos", "/api/auth"]
   });
 });
-
-app.use("/api/alunos", alunoRoutes);
 
 // Tratamento de sinais - IGNORA SIGTERM para não encerrar
 process.on("SIGTERM", () => {
@@ -60,8 +56,11 @@ const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`📍 Endpoints disponíveis:`);
   console.log(`   - GET  /health`);
   console.log(`   - POST /api/auth/login`);
-  console.log(`   - GET  /api/alunos`);
-  console.log(`   - POST /api/alunos`);
+  console.log(`   - POST /api/alunos/public (cadastro público)`);
+  console.log(`   - GET  /api/alunos (protegida)`);
+  console.log(`   - GET  /api/alunos/:id (protegida)`);
+  console.log(`   - PUT  /api/alunos/:id (protegida)`);
+  console.log(`   - DELETE /api/alunos/:id (protegida)`);
 });
 
 initConfig().then(() => {
