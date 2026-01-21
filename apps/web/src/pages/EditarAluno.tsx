@@ -165,8 +165,39 @@ export default function EditarAluno() {
     }
   };
 
-  if (carregando) return <p>Carregando...</p>;
-  if (!aluno) return <p>Aluno não encontrado</p>;
+  if (carregando) {
+    return (
+      <div className="editar-page">
+        <div className="editar-container">
+          <div className="loading-container">
+            <div className="loading-spinner">
+              <div className="spinner-ring"></div>
+              <div className="spinner-ring"></div>
+              <div className="spinner-ring"></div>
+              <div className="spinner-ring"></div>
+            </div>
+            <p className="loading-text">Carregando dados do aluno...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!aluno) {
+    return (
+      <div className="editar-page">
+        <div className="editar-container">
+          <div className="error-container">
+            <div className="error-icon">❌</div>
+            <h2>Aluno não encontrado</h2>
+            <button className="botao-cancelar" onClick={() => navigate("/dashboard")}>
+              Voltar ao Dashboard
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="editar-page">

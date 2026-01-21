@@ -157,7 +157,18 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {carregando && <p>Carregando...</p>}
+        {carregando && (
+          <div className="loading-container">
+            <div className="loading-spinner">
+              <div className="spinner-ring"></div>
+              <div className="spinner-ring"></div>
+              <div className="spinner-ring"></div>
+              <div className="spinner-ring"></div>
+            </div>
+            <p className="loading-text">Carregando dados...</p>
+          </div>
+        )}
+
         {erro && <p className="erro-dashboard">{erro}</p>}
 
         {!carregando && !erro && (
