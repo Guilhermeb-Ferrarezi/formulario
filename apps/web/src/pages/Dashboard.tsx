@@ -193,6 +193,9 @@ export default function Dashboard() {
         <header className="dashboard-header">
           <h1>Dashboard Jovem Tech RP</h1>
           <div>
+            <button className="botao-cadastro" onClick={() => navigate("/")}>
+              ➕ Novo Cadastro
+            </button>
             <button className="botao-home" onClick={() => navigate("/")}>
               🏠 Home
             </button>
