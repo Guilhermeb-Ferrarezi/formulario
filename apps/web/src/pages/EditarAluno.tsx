@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "../styles/editar.css";
 
@@ -38,7 +38,7 @@ export default function EditarAluno() {
   const [carregando, setCarregando] = useState(true);
 
   // Calcular se é menor de idade
-  const ehMenorDeIdade = useMemo(() => {
+  const ehMenorDeIdade = (() => {
     if (!aluno?.data_nascimento) return false;
     const hoje = new Date();
     const nascimento = new Date(aluno.data_nascimento);
@@ -48,7 +48,7 @@ export default function EditarAluno() {
       idade--;
     }
     return idade < 18;
-  }, [aluno?.data_nascimento]);
+  })();
 
   // ======================
   // BUSCAR ALUNO PELO ID
