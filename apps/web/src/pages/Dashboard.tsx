@@ -3,6 +3,14 @@ import { useNavigate } from "react-router-dom";
 import "../styles/dashboard.css"
 import "../styles/app.css"
 
+interface Responsavel {
+  nome: string;
+  grauParentesco: string;
+  whatsapp: string;
+  cpf: string;
+  email: string;
+}
+
 interface Aluno {
   id: number;
   nome: string;
@@ -10,11 +18,7 @@ interface Aluno {
   whatsapp: string;
   email: string;
   cpf: string;
-  responsavel_nome?: string;
-  responsavel_grau_parentesco?: string;
-  responsavel_whatsapp?: string;
-  responsavel_cpf?: string;
-  responsavel_email?: string;
+  responsaveis?: Responsavel[];
 }
 
 export default function Dashboard() {
@@ -219,14 +223,17 @@ export default function Dashboard() {
                       <td>{aluno.email}</td>
                       <td>{aluno.cpf}</td>
                       <td>
-                        {aluno.responsavel_nome ? (
+                        {aluno.responsaveis && aluno.responsaveis.length > 0 ? (
                           <div style={{ fontSize: "0.85rem" }}>
-                            <strong>{aluno.responsavel_nome}</strong>
-                            <br />
-                            {aluno.responsavel_grau_parentesco && (
-                              <>({aluno.responsavel_grau_parentesco})<br /></>
-                            )}
-                            {aluno.responsavel_whatsapp}
+                            {aluno.responsaveis.map((resp, idx) => (
+                              <div key={idx} style={{ marginBottom: "8px", paddingBottom: "8px", borderBottom: idx < aluno.responsaveis!.length - 1 ? "1px solid #eee" : "none" }}>
+                                <strong>{resp.nome}</strong>
+                                <br />
+                                ({resp.grauParentesco})
+                                <br />
+                                <span style={{ color: "#666" }}>{resp.whatsapp}</span>
+                              </div>
+                            ))}
                           </div>
                         ) : (
                           <span style={{ color: "#999" }}>-</span>
