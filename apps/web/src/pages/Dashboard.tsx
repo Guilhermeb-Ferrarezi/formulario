@@ -243,15 +243,17 @@ export default function Dashboard() {
                         <button
                           onClick={() => editarAluno(aluno)}
                           className="botao-editar"
+                          title="Editar aluno"
                         >
-                          Editar
+                          ✏️ Editar
                         </button>
 
                         <button
                           onClick={() => deletarAluno(aluno.id)}
                           className="botao-excluir"
+                          title="Deletar aluno"
                         >
-                          Excluir
+                          🗑️ Excluir
                         </button>
                       </td>
                     </tr>

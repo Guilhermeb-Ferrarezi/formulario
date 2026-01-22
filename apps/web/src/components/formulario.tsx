@@ -67,6 +67,19 @@ export function Formulario() {
     setResponsavelAtivo(responsaveis.length);
   };
 
+  const handleRemoverResponsavel = (index: number) => {
+    if (responsaveis.length === 1) {
+      alert("Você precisa ter pelo menos um responsável");
+      return;
+    }
+    const novasResponsaveis = responsaveis.filter((_, i) => i !== index);
+    setResponsaveis(novasResponsaveis);
+    // Se removeu o ativo, volta ao anterior
+    if (responsavelAtivo >= novasResponsaveis.length) {
+      setResponsavelAtivo(novasResponsaveis.length - 1);
+    }
+  };
+
   const handleSubmitComResponsaveis = (e: React.FormEvent) => {
     e.preventDefault();
     const submitHandler = handleSubmit as any;
@@ -189,14 +202,25 @@ export function Formulario() {
                 {responsaveis.length > 0 && (
                   <div className="responsavel-selector">
                     {responsaveis.map((_, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        className={`responsavel-tab ${responsavelAtivo === index ? 'active' : ''}`}
-                        onClick={() => setResponsavelAtivo(index)}
-                      >
-                        {index + 1}
-                      </button>
+                      <div key={index} className="responsavel-tab-wrapper">
+                        <button
+                          type="button"
+                          className={`responsavel-tab ${responsavelAtivo === index ? 'active' : ''}`}
+                          onClick={() => setResponsavelAtivo(index)}
+                        >
+                          {index + 1}
+                        </button>
+                        {responsaveis.length > 1 && (
+                          <button
+                            type="button"
+                            className="responsavel-remove-btn"
+                            onClick={() => handleRemoverResponsavel(index)}
+                            title="Remover responsável"
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
                     ))}
                     <button
                       type="button"

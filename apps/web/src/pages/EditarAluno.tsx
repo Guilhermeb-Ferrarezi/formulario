@@ -28,7 +28,9 @@ export default function EditarAluno() {
   const navigate = useNavigate();
 
   const [aluno, setAluno] = useState<Aluno | null>(null);
+  const [alunoOriginal, setAlunoOriginal] = useState<Aluno | null>(null);
   const [responsaveis, setResponsaveis] = useState<Responsavel[]>([]);
+  const [responsaveisOriginais, setResponsaveisOriginais] = useState<Responsavel[]>([]);
   const [responsavelAtivo, setResponsavelAtivo] = useState<number>(0);
   const [mensagem, setMensagem] = useState<{
   texto: string;
@@ -80,12 +82,14 @@ export default function EditarAluno() {
 
       const data = await response.json();
       setAluno(data);
+      setAlunoOriginal(JSON.parse(JSON.stringify(data)));
 
       // Carregar responsáveis
       if (data.responsaveis && Array.isArray(data.responsaveis) && data.responsaveis.length > 0) {
         setResponsaveis(data.responsaveis);
+        setResponsaveisOriginais(JSON.parse(JSON.stringify(data.responsaveis)));
       } else {
-        setResponsaveis([{
+        const responsavelVazio = [{
           nome: "",
           grauParentesco: "",
           whatsapp: "",
@@ -94,7 +98,9 @@ export default function EditarAluno() {
           rua: "",
           numero: "",
           bairro: "",
-        }]);
+        }];
+        setResponsaveis(responsavelVazio);
+        setResponsaveisOriginais(responsavelVazio);
       }
     } catch (error) {
       console.error(error);
@@ -145,6 +151,43 @@ export default function EditarAluno() {
     };
     setResponsaveis([...responsaveis, novoResponsavel]);
     setResponsavelAtivo(responsaveis.length);
+  };
+
+  const handleRemoverResponsavel = (index: number) => {
+    if (responsaveis.length === 1) {
+      alert("Você precisa ter pelo menos um responsável");
+      return;
+    }
+    const novasResponsaveis = responsaveis.filter((_, i) => i !== index);
+    setResponsaveis(novasResponsaveis);
+    if (responsavelAtivo >= novasResponsaveis.length) {
+      setResponsavelAtivo(novasResponsaveis.length - 1);
+    }
+  };
+
+  // ======================
+  // VERIFICAR ALTERAÇÕES
+  // ======================
+  const temAlteracoes = () => {
+    if (!aluno || !alunoOriginal) return false;
+    // Comparar dados do aluno
+    return (
+      JSON.stringify({
+        nome: aluno.nome,
+        data_nascimento: aluno.data_nascimento,
+        whatsapp: aluno.whatsapp,
+        email: aluno.email,
+        cpf: aluno.cpf,
+      }) !== JSON.stringify({
+        nome: alunoOriginal.nome,
+        data_nascimento: alunoOriginal.data_nascimento,
+        whatsapp: alunoOriginal.whatsapp,
+        email: alunoOriginal.email,
+        cpf: alunoOriginal.cpf,
+      }) ||
+      // Ou comparar responsáveis
+      JSON.stringify(responsaveis) !== JSON.stringify(responsaveisOriginais)
+    );
   };
 
   // ======================
@@ -329,14 +372,25 @@ export default function EditarAluno() {
 
               <div className="responsavel-selector">
                 {responsaveis.map((_, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    className={`responsavel-tab ${responsavelAtivo === index ? 'active' : ''}`}
-                    onClick={() => setResponsavelAtivo(index)}
-                  >
-                    {index + 1}
-                  </button>
+                  <div key={index} className="responsavel-tab-wrapper">
+                    <button
+                      type="button"
+                      className={`responsavel-tab ${responsavelAtivo === index ? 'active' : ''}`}
+                      onClick={() => setResponsavelAtivo(index)}
+                    >
+                      {index + 1}
+                    </button>
+                    {responsaveis.length > 1 && (
+                      <button
+                        type="button"
+                        className="responsavel-remove-btn"
+                        onClick={() => handleRemoverResponsavel(index)}
+                        title="Remover responsável"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
                 ))}
                 <button
                   type="button"
@@ -475,9 +529,10 @@ export default function EditarAluno() {
             <button
               type="submit"
               className="botao-salvar"
-              title="Salvar alterações"
+              disabled={!temAlteracoes()}
+              title={temAlteracoes() ? "Salvar alterações" : "Nenhuma alteração foi feita"}
             >
-              💾 Salvar alterações
+              💾 {temAlteracoes() ? "Salvar alterações" : "Sem alterações"}
             </button>
             <button type="button" className="botao-cancelar" onClick={() => navigate("/dashboard")}>
               ❌ Cancelar
