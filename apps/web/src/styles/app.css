@@ -1,3 +1,6 @@
+/* ===== IMPORTAR FONTES ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
 /* ===== RESET E BASE ===== */
 * {
   margin: 0;
@@ -14,8 +17,10 @@ body {
   margin: 0;
   padding: 0;
   background-color: white;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', 'Inter', sans-serif;
   color: #1c1c1c;
+  font-weight: 400;
+  letter-spacing: 0.3px;
 }
 
 /* ===== ESTILOS DO LOGIN ===== */
@@ -121,16 +126,17 @@ body {
 
 /* Card do formulário */
 .form-card {
-  background: linear-gradient(135deg, #f9f9fb 0%, #ffffff 60%);
-  border: 1px solid #e6e6ef;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-  border-radius: 20px;
-  padding: 28px;
+  background: #ffffff;
+  border: 2px solid #e6e6ef;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
+  padding: 32px;
   text-align: left;
   justify-content: center;
   display: flex;
   flex-direction: column;
   height: -50px;
+  transition: all 0.3s ease;
 }
 
 .form-card h2 {
@@ -161,12 +167,13 @@ body {
 
 .field input {
   padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid #dcdce6;
-  background: #fff;
+  border-radius: 10px;
+  border: 2px solid #e6e6ef;
+  background: #ffffff;
   font-size: 1rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.3s ease;
   cursor: text;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
 .field input[type="date"] {
@@ -189,7 +196,8 @@ body {
 .field input:focus {
   outline: none;
   border-color: #fb5b31;
-  box-shadow: 0 0 0 3px rgba(251, 91, 49, 0.12);
+  box-shadow: 0 0 0 4px rgba(251, 91, 49, 0.15), 0 4px 12px rgba(251, 91, 49, 0.1);
+  background: #fafafe;
 }
 
 /* Botão */
@@ -199,23 +207,27 @@ body {
   justify-content: center;
   gap: 10px;
   padding: 14px 22px;
-  border-radius: 14px;
+  border-radius: 12px;
   font-weight: 700;
   font-size: 1rem;
   color: #fff;
-  background: linear-gradient(90deg, #fb5b31 0%, #a152ad 100%);
+  background: linear-gradient(135deg, #fb5b31 0%, #ff7a50 50%, #a152ad 100%);
   border: none;
   cursor: pointer;
-  box-shadow: 0 8px 18px rgba(118, 71, 236, 0.18);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.2s ease;
+  box-shadow: 0 8px 20px rgba(251, 91, 49, 0.25);
+  transition: all 0.3s ease;
   width: 100%;
-  margin-top: 4px;
+  margin-top: 8px;
 }
 
 .cta:hover {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
-  box-shadow: 0 12px 22px rgba(118, 71, 236, 0.2);
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(251, 91, 49, 0.3);
+}
+
+.cta:active {
+  transform: translateY(0);
 }
 
 /* Observação */
@@ -344,21 +356,28 @@ body {
 
 /* ===== SEÇÃO DE RESPONSÁVEL ===== */
 .responsavel-section-header {
-  margin-top: 2rem;
-  margin-bottom: 1rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0f0f5;
 }
 
 .responsavel-title {
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 700;
   margin-bottom: 0.5rem;
   color: #1c1c1c;
+  background: linear-gradient(135deg, #fb5b31 0%, #a152ad 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .responsavel-description {
   font-size: 0.9rem;
   color: #666;
   margin: 0;
+  line-height: 1.5;
 }
 
 /* Seletor de responsáveis */
@@ -377,64 +396,68 @@ body {
 }
 
 .responsavel-tab {
-  min-width: 44px;
-  height: 44px;
-  padding: 8px 12px;
-  border: 2px solid #dcdce6;
+  min-width: 48px;
+  height: 48px;
+  padding: 8px 14px;
+  border: 2px solid #e6e6ef;
   border-radius: 12px;
-  background: #fff;
-  color: #1c1c1c;
+  background: #f9f9fb;
+  color: #4a4a4a;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .responsavel-tab:hover {
   border-color: #fb5b31;
   background: #fff5f3;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(251, 91, 49, 0.15);
+  box-shadow: 0 6px 16px rgba(251, 91, 49, 0.12);
 }
 
 .responsavel-tab.active {
-  border-color: #fb5b31;
+  border-color: transparent;
   background: linear-gradient(135deg, #fb5b31 0%, #ff7a50 100%);
   color: #fff;
-  box-shadow: 0 4px 16px rgba(251, 91, 49, 0.3);
+  box-shadow: 0 6px 20px rgba(251, 91, 49, 0.28);
 }
 
 .responsavel-tab.active:hover {
   background: linear-gradient(135deg, #e54a21 0%, #fb5b31 100%);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(251, 91, 49, 0.32);
 }
 
 /* Botão de adicionar responsável */
 .responsavel-add-btn {
-  min-width: 44px;
-  height: 44px;
+  min-width: 48px;
+  height: 48px;
   padding: 8px;
-  border: 2px solid #dcdce6;
+  border: 2px dashed #e6e6ef;
   border-radius: 12px;
-  background: #fff;
+  background: #fafafe;
   color: #fb5b31;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   line-height: 1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .responsavel-add-btn:hover {
   border-color: #fb5b31;
   background: #fff5f3;
   transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(251, 91, 49, 0.12);
   box-shadow: 0 4px 12px rgba(251, 91, 49, 0.15);
 }
 
@@ -445,27 +468,29 @@ body {
 /* Botão de remover responsável */
 .responsavel-remove-btn {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 20px;
-  height: 20px;
+  top: -10px;
+  right: -10px;
+  width: 24px;
+  height: 24px;
   padding: 0;
   border: none;
   border-radius: 50%;
-  background: #ff4444;
+  background: linear-gradient(135deg, #ff4757 0%, #ff6348 100%);
   color: #fff;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: bold;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
 }
 
 .responsavel-remove-btn:hover {
-  background: #dd0000;
-  transform: scale(1.1);
+  background: linear-gradient(135deg, #ff3838 0%, #ff5340 100%);
+  transform: scale(1.15);
+  box-shadow: 0 6px 18px rgba(255, 71, 87, 0.4);
 }
 
 .responsavel-remove-btn:active {
@@ -504,14 +529,22 @@ body {
   margin-top: 1.5rem;
   margin-bottom: 1rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #eee;
+  border-top: 2px solid #f0f0f5;
 }
 
 .responsavel-endereco-title h4 {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: #1c1c1c;
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.responsavel-endereco-title h4::before {
+  content: '📍';
+  font-size: 1.1rem;
 }
 
 /* Layout de campos em linha */
