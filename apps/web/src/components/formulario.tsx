@@ -1,6 +1,14 @@
 import { useFormulario } from "../hooks/useFormulario";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import "../styles/app.css"
+
+interface Responsavel {
+  nome: string;
+  grauParentesco: string;
+  whatsapp: string;
+  cpf: string;
+  email: string;
+}
 
 export function Formulario() {
   const { values, mensagem, handleChange, handleSubmit } = useFormulario();
@@ -17,6 +25,52 @@ export function Formulario() {
     }
     return idade < 18;
   }, [values.dataNascimento]);
+
+  const [responsaveis, setResponsaveis] = useState<Responsavel[]>([
+    {
+      nome: "",
+      grauParentesco: "",
+      whatsapp: "",
+      cpf: "",
+      email: "",
+    },
+  ]);
+  const [responsavelAtivo, setResponsavelAtivo] = useState<number>(0);
+
+  const handleResponsavelChange = (field: keyof Responsavel, value: string) => {
+    const novasResponsaveis = [...responsaveis];
+    novasResponsaveis[responsavelAtivo] = {
+      ...novasResponsaveis[responsavelAtivo],
+      [field]: value,
+    };
+    setResponsaveis(novasResponsaveis);
+  };
+
+  const handleAdicionarResponsavel = () => {
+    const novoResponsavel: Responsavel = {
+      nome: "",
+      grauParentesco: "",
+      whatsapp: "",
+      cpf: "",
+      email: "",
+    };
+    setResponsaveis([...responsaveis, novoResponsavel]);
+    setResponsavelAtivo(responsaveis.length);
+  };
+
+  const handleSubmitComResponsaveis = (e: React.FormEvent) => {
+    e.preventDefault();
+    const submitHandler = handleSubmit as any;
+    submitHandler(e, ehMenorDeIdade ? responsaveis : null);
+  };
+
+  const responsavelAtualizado = responsaveis[responsavelAtivo] || {
+    nome: "",
+    grauParentesco: "",
+    whatsapp: "",
+    cpf: "",
+    email: "",
+  };
 
   return (
     <header>
@@ -42,7 +96,7 @@ export function Formulario() {
           </div>
 
           {/* Coluna direita (formulário) */}
-          <form className="form-card" onSubmit={handleSubmit}>
+          <form className="form-card" onSubmit={handleSubmitComResponsaveis}>
             <h2>Envie os dados do seu filho(a)</h2>
             <p>Responder leva menos de 1 minuto.</p>
 
@@ -75,7 +129,7 @@ export function Formulario() {
                 placeholder="000.000.000-00"
                 value={values.cpf}
                 onChange={handleChange}
-                min-Length={11}
+                minLength={11}
                 maxLength={15}
                 required
               />
@@ -111,22 +165,44 @@ export function Formulario() {
             {/* Seção de dados do responsável (se menor de 18 anos) */}
             {ehMenorDeIdade && (
               <>
-                <div style={{ marginTop: "2rem", marginBottom: "1rem" }}>
-                  <h3 style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "0.5rem" }}>
+                <div className="responsavel-section-header">
+                  <h3 className="responsavel-title">
                     Dados do Responsável
                   </h3>
-                  <p style={{ fontSize: "0.9rem", color: "#666" }}>
+                  <p className="responsavel-description">
                     Como o candidato é menor de idade, precisamos dos dados do responsável legal.
                   </p>
                 </div>
 
+                {responsaveis.length > 0 && (
+                  <div className="responsavel-selector">
+                    {responsaveis.map((_, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        className={`responsavel-tab ${responsavelAtivo === index ? 'active' : ''}`}
+                        onClick={() => setResponsavelAtivo(index)}
+                      >
+                        {index + 1}
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      className="responsavel-add-btn"
+                      onClick={handleAdicionarResponsavel}
+                    >
+                      +
+                    </button>
+                  </div>
+                )}
+
                 <div className="field">
                   <label>Nome completo do responsável</label>
                   <input
-                    name="responsavelNome"
+                    name="nome"
                     placeholder="Digite o nome completo"
-                    value={values.responsavelNome}
-                    onChange={handleChange}
+                    value={responsavelAtualizado.nome}
+                    onChange={(e) => handleResponsavelChange("nome", e.target.value)}
                     required
                   />
                 </div>
@@ -136,29 +212,29 @@ export function Formulario() {
                   <div className="parentesco-selector">
                     <button
                       type="button"
-                      className={`parentesco-option ${values.responsavelGrauParentesco === 'Pai' ? 'selected' : ''}`}
-                      onClick={() => handleChange({ target: { name: 'responsavelGrauParentesco', value: 'Pai' } } as any)}
+                      className={`parentesco-option ${responsavelAtualizado.grauParentesco === 'Pai' ? 'selected' : ''}`}
+                      onClick={() => handleResponsavelChange('grauParentesco', 'Pai')}
                     >
                       Pai
                     </button>
                     <button
                       type="button"
-                      className={`parentesco-option ${values.responsavelGrauParentesco === 'Mãe' ? 'selected' : ''}`}
-                      onClick={() => handleChange({ target: { name: 'responsavelGrauParentesco', value: 'Mãe' } } as any)}
+                      className={`parentesco-option ${responsavelAtualizado.grauParentesco === 'Mãe' ? 'selected' : ''}`}
+                      onClick={() => handleResponsavelChange('grauParentesco', 'Mãe')}
                     >
                       Mãe
                     </button>
                     <button
                       type="button"
-                      className={`parentesco-option ${values.responsavelGrauParentesco === 'Tutor(a)' ? 'selected' : ''}`}
-                      onClick={() => handleChange({ target: { name: 'responsavelGrauParentesco', value: 'Tutor(a)' } } as any)}
+                      className={`parentesco-option ${responsavelAtualizado.grauParentesco === 'Tutor(a)' ? 'selected' : ''}`}
+                      onClick={() => handleResponsavelChange('grauParentesco', 'Tutor(a)')}
                     >
                       Tutor(a)
                     </button>
                     <button
                       type="button"
-                      className={`parentesco-option ${values.responsavelGrauParentesco === 'Avô/Avó' ? 'selected' : ''}`}
-                      onClick={() => handleChange({ target: { name: 'responsavelGrauParentesco', value: 'Avô/Avó' } } as any)}
+                      className={`parentesco-option ${responsavelAtualizado.grauParentesco === 'Avô/Avó' ? 'selected' : ''}`}
+                      onClick={() => handleResponsavelChange('grauParentesco', 'Avô/Avó')}
                     >
                       Avô/Avó
                     </button>
@@ -169,10 +245,10 @@ export function Formulario() {
                   <label>WhatsApp do responsável</label>
                   <input
                     type="tel"
-                    name="responsavelWhatsapp"
+                    name="whatsapp"
                     placeholder="(00) 00000-0000"
-                    value={values.responsavelWhatsapp}
-                    onChange={handleChange}
+                    value={responsavelAtualizado.whatsapp}
+                    onChange={(e) => handleResponsavelChange("whatsapp", e.target.value)}
                     minLength={10}
                     maxLength={14}
                     required
@@ -182,10 +258,10 @@ export function Formulario() {
                 <div className="field">
                   <label>CPF do responsável</label>
                   <input
-                    name="responsavelCpf"
+                    name="cpf"
                     placeholder="000.000.000-00"
-                    value={values.responsavelCpf}
-                    onChange={handleChange}
+                    value={responsavelAtualizado.cpf}
+                    onChange={(e) => handleResponsavelChange("cpf", e.target.value)}
                     minLength={11}
                     maxLength={15}
                     required
@@ -196,13 +272,17 @@ export function Formulario() {
                   <label>E-mail do responsável</label>
                   <input
                     type="email"
-                    name="responsavelEmail"
+                    name="email"
                     placeholder="email@dominio.com"
-                    value={values.responsavelEmail}
-                    onChange={handleChange}
+                    value={responsavelAtualizado.email}
+                    onChange={(e) => handleResponsavelChange("email", e.target.value)}
                     maxLength={30}
                     required
                   />
+                </div>
+
+                <div className="btn-add-familiar">
+                  <button type="button" id='btn-responsavel' onClick={handleAdicionarResponsavel}>Adicionar responsável</button>
                 </div>
               </>
             )}
@@ -212,7 +292,6 @@ export function Formulario() {
                 {mensagem.texto}
               </p>
             )}
-
 
             <button type="submit" className="cta">
               Quero participar

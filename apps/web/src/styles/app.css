@@ -342,3 +342,137 @@ body {
   }
 }
 
+/* ===== SEÇÃO DE RESPONSÁVEL ===== */
+.responsavel-section-header {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.responsavel-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1c1c1c;
+}
+
+.responsavel-description {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+}
+
+/* Seletor de responsáveis */
+.responsavel-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.responsavel-tab {
+  min-width: 44px;
+  height: 44px;
+  padding: 8px 12px;
+  border: 2px solid #dcdce6;
+  border-radius: 12px;
+  background: #fff;
+  color: #1c1c1c;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.responsavel-tab:hover {
+  border-color: #fb5b31;
+  background: #fff5f3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(251, 91, 49, 0.15);
+}
+
+.responsavel-tab.active {
+  border-color: #fb5b31;
+  background: linear-gradient(135deg, #fb5b31 0%, #ff7a50 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(251, 91, 49, 0.3);
+}
+
+.responsavel-tab.active:hover {
+  background: linear-gradient(135deg, #e54a21 0%, #fb5b31 100%);
+  transform: translateY(-2px);
+}
+
+/* Botão de adicionar responsável */
+.responsavel-add-btn {
+  min-width: 44px;
+  height: 44px;
+  padding: 8px;
+  border: 2px solid #dcdce6;
+  border-radius: 12px;
+  background: #fff;
+  color: #fb5b31;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.responsavel-add-btn:hover {
+  border-color: #fb5b31;
+  background: #fff5f3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(251, 91, 49, 0.15);
+}
+
+.responsavel-add-btn:active {
+  transform: translateY(0);
+}
+
+/* Botão de adicionar responsável (id específico) */
+#btn-responsavel {
+  width: 100%;
+  padding: 14px 22px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #fff;
+  background: linear-gradient(90deg, #fb5b31 0%, #a152ad 100%);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(118, 71, 236, 0.18);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.2s ease;
+  margin-top: 4px;
+}
+
+#btn-responsavel:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 22px rgba(118, 71, 236, 0.2);
+}
+
+.btn-add-familiar {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 500px) {
+  .responsavel-selector {
+    gap: 8px;
+  }
+
+  .responsavel-tab,
+  .responsavel-add-btn {
+    min-width: 40px;
+    height: 40px;
+    font-size: 0.9rem;
+  }
+}
+

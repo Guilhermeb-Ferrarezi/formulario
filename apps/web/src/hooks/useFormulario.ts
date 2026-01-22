@@ -49,7 +49,7 @@ export function useFormulario() {
     }));
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>, responsaveisData?: any) {
   e.preventDefault();
   setMensagem(null);
 
@@ -87,49 +87,59 @@ export function useFormulario() {
     return;
   }
 
-  // Se menor de idade, validar responsável
-  if (ehMenorDeIdade) {
-    const responsavelValido =
-      values.responsavelNome?.trim() !== "" &&
-      values.responsavelGrauParentesco?.trim() !== "" &&
-      values.responsavelWhatsapp?.trim() !== "" &&
-      values.responsavelCpf?.trim() !== "" &&
-      values.responsavelEmail?.trim() !== "";
-
-    if (!responsavelValido) {
+  // Se menor de idade, validar responsáveis
+  if (ehMenorDeIdade && responsaveisData && Array.isArray(responsaveisData)) {
+    if (responsaveisData.length === 0) {
       setMensagem({
-        texto: "Por favor, preencha todos os dados do responsável.",
+        texto: "Por favor, adicione pelo menos um responsável.",
         tipo: "erro",
       });
       return;
     }
 
-    // Validar email do responsável
-    if (!validarEmail(values.responsavelEmail!)) {
-      setMensagem({
-        texto: "Email do responsável inválido.",
-        tipo: "erro",
-      });
-      return;
-    }
+    for (const resp of responsaveisData) {
+      if (!resp.nome?.trim() || !resp.grauParentesco?.trim() || !resp.whatsapp?.trim() || !resp.cpf?.trim() || !resp.email?.trim()) {
+        setMensagem({
+          texto: "Por favor, preencha todos os dados de todos os responsáveis.",
+          tipo: "erro",
+        });
+        return;
+      }
 
-    // Validar CPF do responsável
-    if (!validarCPF(values.responsavelCpf!)) {
-      setMensagem({
-        texto: "CPF do responsável inválido (11 dígitos).",
-        tipo: "erro",
-      });
-      return;
+      if (!validarEmail(resp.email)) {
+        setMensagem({
+          texto: `Email do responsável ${resp.nome} inválido.`,
+          tipo: "erro",
+        });
+        return;
+      }
+
+      if (!validarCPF(resp.cpf)) {
+        setMensagem({
+          texto: `CPF do responsável ${resp.nome} inválido (11 dígitos).`,
+          tipo: "erro",
+        });
+        return;
+      }
     }
   }
 
   try {
+    const payload = {
+      nome: values.nome,
+      data_nascimento: values.dataNascimento,
+      whatsapp: values.whatsapp,
+      email: values.email,
+      cpf: values.cpf,
+      responsaveis: responsaveisData || [],
+    };
+
     const response = await fetch(`${API_URL}/alunos/public`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(values),
+      body: JSON.stringify(payload),
     });
 
     const data = await response.json();
@@ -145,8 +155,22 @@ export function useFormulario() {
 
     // ✅ sucesso
     setMensagem({
-      texto: "Cadastro realizado com sucesso!",
+      texto: data.mensagem || "Cadastro realizado com sucesso!",
       tipo: "sucesso",
+    });
+
+    // Limpar formulário após sucesso
+    setValues({
+      nome: "",
+      dataNascimento: "",
+      whatsapp: "",
+      email: "",
+      cpf: "",
+      responsavelNome: "",
+      responsavelGrauParentesco: "",
+      responsavelWhatsapp: "",
+      responsavelCpf: "",
+      responsavelEmail: "",
     });
 
   } catch (error) {
