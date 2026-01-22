@@ -150,14 +150,6 @@ export default function EditarAluno() {
   };
 
   // ======================
-  // VERIFICAR SE HOUVE MUDANÇAS
-  // ======================
-  const houveAlteracoes = useMemo(() => {
-    if (!aluno || !alunoOriginal) return false;
-    return JSON.stringify(aluno) !== JSON.stringify(alunoOriginal);
-  }, [aluno, alunoOriginal]);
-
-  // ======================
   // SALVAR ALTERAÇÕES
   // ======================
   const handleSubmit = async (e: React.FormEvent) => {
