@@ -8,6 +8,9 @@ interface Responsavel {
   whatsapp: string;
   cpf: string;
   email: string;
+  rua: string;
+  numero: string;
+  bairro: string;
 }
 
 export function Formulario() {
@@ -33,6 +36,9 @@ export function Formulario() {
       whatsapp: "",
       cpf: "",
       email: "",
+      rua: "",
+      numero: "",
+      bairro: "",
     },
   ]);
   const [responsavelAtivo, setResponsavelAtivo] = useState<number>(0);
@@ -53,6 +59,9 @@ export function Formulario() {
       whatsapp: "",
       cpf: "",
       email: "",
+      rua: "",
+      numero: "",
+      bairro: "",
     };
     setResponsaveis([...responsaveis, novoResponsavel]);
     setResponsavelAtivo(responsaveis.length);
@@ -70,6 +79,9 @@ export function Formulario() {
     whatsapp: "",
     cpf: "",
     email: "",
+    rua: "",
+    numero: "",
+    bairro: "",
   };
 
   return (
@@ -279,6 +291,45 @@ export function Formulario() {
                     maxLength={30}
                     required
                   />
+                </div>
+
+                <div className="responsavel-endereco-title">
+                  <h4>Endereço do Responsável</h4>
+                </div>
+
+                <div className="field">
+                  <label>Rua</label>
+                  <input
+                    name="rua"
+                    placeholder="Nome da rua"
+                    value={responsavelAtualizado.rua}
+                    onChange={(e) => handleResponsavelChange("rua", e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="field-row">
+                  <div className="field">
+                    <label>Número</label>
+                    <input
+                      name="numero"
+                      placeholder="Ex: 123"
+                      value={responsavelAtualizado.numero}
+                      onChange={(e) => handleResponsavelChange("numero", e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="field">
+                    <label>Bairro</label>
+                    <input
+                      name="bairro"
+                      placeholder="Nome do bairro"
+                      value={responsavelAtualizado.bairro}
+                      onChange={(e) => handleResponsavelChange("bairro", e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
 
               </>

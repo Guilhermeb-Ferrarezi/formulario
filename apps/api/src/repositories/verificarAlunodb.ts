@@ -61,10 +61,10 @@ export async function inserirResponsaveis(
   for (const resp of responsaveis) {
     await pool.query(
       `
-      INSERT INTO responsaveis (aluno_id, nome, grau_parentesco, whatsapp, cpf, email)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO responsaveis (aluno_id, nome, grau_parentesco, whatsapp, cpf, email, rua, numero, bairro)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       `,
-      [alunoId, resp.nome, resp.grauParentesco, resp.whatsapp, resp.cpf, resp.email]
+      [alunoId, resp.nome, resp.grauParentesco, resp.whatsapp, resp.cpf, resp.email, resp.rua || null, resp.numero || null, resp.bairro || null]
     );
   }
 }
@@ -75,7 +75,7 @@ export async function inserirResponsaveis(
 export async function buscarResponsaveisPorAlunoId(alunoId: number): Promise<Responsavel[]> {
   const result = await pool.query(
     `
-    SELECT nome, grau_parentesco as "grauParentesco", whatsapp, cpf, email
+    SELECT nome, grau_parentesco as "grauParentesco", whatsapp, cpf, email, rua, numero, bairro
     FROM responsaveis
     WHERE aluno_id = $1
     ORDER BY id ASC

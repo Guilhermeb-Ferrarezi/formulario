@@ -4,6 +4,9 @@ export type Responsavel = {
   whatsapp: string;
   cpf: string;
   email: string;
+  rua?: string;
+  numero?: string;
+  bairro?: string;
 };
 
 export type Aluno = {

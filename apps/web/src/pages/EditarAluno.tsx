@@ -2,6 +2,17 @@ import { useEffect, useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "../styles/editar.css";
 
+interface Responsavel {
+  nome: string;
+  grauParentesco: string;
+  whatsapp: string;
+  cpf: string;
+  email: string;
+  rua: string;
+  numero: string;
+  bairro: string;
+}
+
 interface Aluno {
   id: number;
   nome: string;
@@ -9,11 +20,7 @@ interface Aluno {
   whatsapp: string;
   email: string;
   cpf: string;
-  responsavel_nome?: string;
-  responsavel_grau_parentesco?: string;
-  responsavel_whatsapp?: string;
-  responsavel_cpf?: string;
-  responsavel_email?: string;
+  responsaveis?: Responsavel[];
 }
 
 export default function EditarAluno() {
@@ -22,13 +29,14 @@ export default function EditarAluno() {
 
   const [aluno, setAluno] = useState<Aluno | null>(null);
   const [alunoOriginal, setAlunoOriginal] = useState<Aluno | null>(null);
+  const [responsaveis, setResponsaveis] = useState<Responsavel[]>([]);
+  const [responsavelAtivo, setResponsavelAtivo] = useState<number>(0);
   const [mensagem, setMensagem] = useState<{
   texto: string;
   tipo: "sucesso" | "erro";
     } | null>(null);
 
   const [carregando, setCarregando] = useState(true);
-  const [mostrarResponsavel, setMostrarResponsavel] = useState(false);
 
   // Calcular se é menor de idade
   const ehMenorDeIdade = useMemo(() => {
@@ -73,12 +81,22 @@ export default function EditarAluno() {
 
       const data = await response.json();
       setAluno(data);
-      setAlunoOriginal(data); // Salvar estado original
+      setAlunoOriginal(data);
 
-      // Verificar se tem dados de responsável
-      if (data.responsavel_nome || data.responsavel_grau_parentesco ||
-          data.responsavel_whatsapp || data.responsavel_cpf || data.responsavel_email) {
-        setMostrarResponsavel(true);
+      // Carregar responsáveis
+      if (data.responsaveis && Array.isArray(data.responsaveis) && data.responsaveis.length > 0) {
+        setResponsaveis(data.responsaveis);
+      } else {
+        setResponsaveis([{
+          nome: "",
+          grauParentesco: "",
+          whatsapp: "",
+          cpf: "",
+          email: "",
+          rua: "",
+          numero: "",
+          bairro: "",
+        }]);
       }
     } catch (error) {
       console.error(error);
@@ -92,13 +110,43 @@ export default function EditarAluno() {
   };
 
   // ======================
-  // ATUALIZAR CAMPOS
+  // ATUALIZAR CAMPOS DO ALUNO
   // ======================
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!aluno) return;
 
     const { name, value } = e.target;
     setAluno({ ...aluno, [name]: value });
+  };
+
+  // ======================
+  // ATUALIZAR RESPONSÁVEL
+  // ======================
+  const handleResponsavelChange = (field: keyof Responsavel, value: string) => {
+    const novasResponsaveis = [...responsaveis];
+    novasResponsaveis[responsavelAtivo] = {
+      ...novasResponsaveis[responsavelAtivo],
+      [field]: value,
+    };
+    setResponsaveis(novasResponsaveis);
+  };
+
+  // ======================
+  // ADICIONAR RESPONSÁVEL
+  // ======================
+  const handleAdicionarResponsavel = () => {
+    const novoResponsavel: Responsavel = {
+      nome: "",
+      grauParentesco: "",
+      whatsapp: "",
+      cpf: "",
+      email: "",
+      rua: "",
+      numero: "",
+      bairro: "",
+    };
+    setResponsaveis([...responsaveis, novoResponsavel]);
+    setResponsavelAtivo(responsaveis.length);
   };
 
   // ======================
@@ -115,16 +163,15 @@ export default function EditarAluno() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!houveAlteracoes) {
-      setMensagem({
-        texto: "Nenhuma alteração foi feita",
-        tipo: "erro",
-      });
-      return;
-    }
+    if (!aluno) return;
 
     try {
       const token = localStorage.getItem("token");
+
+      const payload = {
+        ...aluno,
+        responsaveis: responsaveis || [],
+      };
 
       const response = await fetch(
         `https://api.santos-tech.com/api/alunos/${id}`,
@@ -134,7 +181,7 @@ export default function EditarAluno() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(aluno),
+          body: JSON.stringify(payload),
         }
       );
 
@@ -149,7 +196,7 @@ export default function EditarAluno() {
       }
 
       setMensagem({
-        texto: "Aluno atualizado com sucesso!",
+        texto: "Aluno e responsáveis atualizados com sucesso!",
         tipo: "sucesso",
       });
 
@@ -278,118 +325,169 @@ export default function EditarAluno() {
             </div>
           </div>
 
-          {/* Seção de dados do responsável */}
-          <div className="form-section responsavel-section">
-            <div className="section-header-with-toggle">
-              <div>
-                <h3>👤 Dados do Responsável</h3>
-                <p className="section-description">
+          {/* Seção de dados dos responsáveis */}
+          {responsaveis.length > 0 && (
+            <div className="form-section responsavel-section">
+              <div className="responsavel-section-header">
+                <h3 className="responsavel-title">👤 Dados dos Responsáveis</h3>
+                <p className="responsavel-description">
                   {ehMenorDeIdade
                     ? "Como o candidato é menor de idade, os dados do responsável são obrigatórios."
                     : "Adicione dados do responsável (opcional)."}
                 </p>
               </div>
-              <button
-                type="button"
-                className="toggle-responsavel-btn"
-                onClick={() => setMostrarResponsavel(!mostrarResponsavel)}
-              >
-                {mostrarResponsavel ? "Ocultar" : "Adicionar"}
-              </button>
-            </div>
 
-            {mostrarResponsavel && (
-              <>
-                <div className="field">
-                  <label>Nome completo do responsável</label>
-                  <input
-                    name="responsavel_nome"
-                    value={aluno.responsavel_nome || ""}
-                    onChange={handleChange}
-                    placeholder="Nome completo do responsável"
-                    required={ehMenorDeIdade}
-                  />
-                </div>
+              <div className="responsavel-selector">
+                {responsaveis.map((_, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    className={`responsavel-tab ${responsavelAtivo === index ? 'active' : ''}`}
+                    onClick={() => setResponsavelAtivo(index)}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  className="responsavel-add-btn"
+                  onClick={handleAdicionarResponsavel}
+                >
+                  +
+                </button>
+              </div>
 
-                <div className="field">
-                  <label>Grau de parentesco</label>
-                  <div className="parentesco-selector">
-                    <button
-                      type="button"
-                      className={`parentesco-option ${aluno.responsavel_grau_parentesco === 'Pai' ? 'selected' : ''}`}
-                      onClick={() => setAluno({ ...aluno, responsavel_grau_parentesco: 'Pai' })}
-                    >
-                      👨 Pai
-                    </button>
-                    <button
-                      type="button"
-                      className={`parentesco-option ${aluno.responsavel_grau_parentesco === 'Mãe' ? 'selected' : ''}`}
-                      onClick={() => setAluno({ ...aluno, responsavel_grau_parentesco: 'Mãe' })}
-                    >
-                      👩 Mãe
-                    </button>
-                    <button
-                      type="button"
-                      className={`parentesco-option ${aluno.responsavel_grau_parentesco === 'Tutor(a)' ? 'selected' : ''}`}
-                      onClick={() => setAluno({ ...aluno, responsavel_grau_parentesco: 'Tutor(a)' })}
-                    >
-                      👤 Tutor(a)
-                    </button>
-                    <button
-                      type="button"
-                      className={`parentesco-option ${aluno.responsavel_grau_parentesco === 'Avô/Avó' ? 'selected' : ''}`}
-                      onClick={() => setAluno({ ...aluno, responsavel_grau_parentesco: 'Avô/Avó' })}
-                    >
-                      👴 Avô/Avó
-                    </button>
+              {responsaveis[responsavelAtivo] && (
+                <>
+                  <div className="field">
+                    <label>Nome completo do responsável</label>
+                    <input
+                      name="nome"
+                      value={responsaveis[responsavelAtivo].nome}
+                      onChange={(e) => handleResponsavelChange("nome", e.target.value)}
+                      placeholder="Nome completo do responsável"
+                      required={ehMenorDeIdade}
+                    />
                   </div>
-                </div>
 
-                <div className="field">
-                  <label>WhatsApp do responsável</label>
-                  <input
-                    name="responsavel_whatsapp"
-                    value={aluno.responsavel_whatsapp || ""}
-                    onChange={handleChange}
-                    placeholder="(00) 00000-0000"
-                    required={ehMenorDeIdade}
-                  />
-                </div>
+                  <div className="field">
+                    <label>Grau de parentesco</label>
+                    <div className="parentesco-selector">
+                      <button
+                        type="button"
+                        className={`parentesco-option ${responsaveis[responsavelAtivo].grauParentesco === 'Pai' ? 'selected' : ''}`}
+                        onClick={() => handleResponsavelChange('grauParentesco', 'Pai')}
+                      >
+                        👨 Pai
+                      </button>
+                      <button
+                        type="button"
+                        className={`parentesco-option ${responsaveis[responsavelAtivo].grauParentesco === 'Mãe' ? 'selected' : ''}`}
+                        onClick={() => handleResponsavelChange('grauParentesco', 'Mãe')}
+                      >
+                        👩 Mãe
+                      </button>
+                      <button
+                        type="button"
+                        className={`parentesco-option ${responsaveis[responsavelAtivo].grauParentesco === 'Tutor(a)' ? 'selected' : ''}`}
+                        onClick={() => handleResponsavelChange('grauParentesco', 'Tutor(a)')}
+                      >
+                        👤 Tutor(a)
+                      </button>
+                      <button
+                        type="button"
+                        className={`parentesco-option ${responsaveis[responsavelAtivo].grauParentesco === 'Avô/Avó' ? 'selected' : ''}`}
+                        onClick={() => handleResponsavelChange('grauParentesco', 'Avô/Avó')}
+                      >
+                        👴 Avô/Avó
+                      </button>
+                    </div>
+                  </div>
 
-                <div className="field">
-                  <label>CPF do responsável</label>
-                  <input
-                    name="responsavel_cpf"
-                    value={aluno.responsavel_cpf || ""}
-                    onChange={handleChange}
-                    placeholder="000.000.000-00"
-                    required={ehMenorDeIdade}
-                  />
-                </div>
+                  <div className="field">
+                    <label>WhatsApp do responsável</label>
+                    <input
+                      name="whatsapp"
+                      value={responsaveis[responsavelAtivo].whatsapp}
+                      onChange={(e) => handleResponsavelChange("whatsapp", e.target.value)}
+                      placeholder="(00) 00000-0000"
+                      required={ehMenorDeIdade}
+                    />
+                  </div>
 
-                <div className="field">
-                  <label>E-mail do responsável</label>
-                  <input
-                    type="email"
-                    name="responsavel_email"
-                    value={aluno.responsavel_email || ""}
-                    onChange={handleChange}
-                    placeholder="email@exemplo.com"
-                    required={ehMenorDeIdade}
-                  />
-                </div>
-              </>
-            )}
-          </div>
+                  <div className="field">
+                    <label>CPF do responsável</label>
+                    <input
+                      name="cpf"
+                      value={responsaveis[responsavelAtivo].cpf}
+                      onChange={(e) => handleResponsavelChange("cpf", e.target.value)}
+                      placeholder="000.000.000-00"
+                      required={ehMenorDeIdade}
+                    />
+                  </div>
+
+                  <div className="field">
+                    <label>E-mail do responsável</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={responsaveis[responsavelAtivo].email}
+                      onChange={(e) => handleResponsavelChange("email", e.target.value)}
+                      placeholder="email@exemplo.com"
+                      required={ehMenorDeIdade}
+                    />
+                  </div>
+
+                  <div className="responsavel-endereco-title">
+                    <h4>Endereço do Responsável</h4>
+                  </div>
+
+                  <div className="field">
+                    <label>Rua</label>
+                    <input
+                      name="rua"
+                      value={responsaveis[responsavelAtivo].rua}
+                      onChange={(e) => handleResponsavelChange("rua", e.target.value)}
+                      placeholder="Nome da rua"
+                      required={ehMenorDeIdade}
+                    />
+                  </div>
+
+                  <div className="field-row">
+                    <div className="field">
+                      <label>Número</label>
+                      <input
+                        name="numero"
+                        value={responsaveis[responsavelAtivo].numero}
+                        onChange={(e) => handleResponsavelChange("numero", e.target.value)}
+                        placeholder="Ex: 123"
+                        required={ehMenorDeIdade}
+                      />
+                    </div>
+
+                    <div className="field">
+                      <label>Bairro</label>
+                      <input
+                        name="bairro"
+                        value={responsaveis[responsavelAtivo].bairro}
+                        onChange={(e) => handleResponsavelChange("bairro", e.target.value)}
+                        placeholder="Nome do bairro"
+                        required={ehMenorDeIdade}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
 
           <div className="form-actions">
             <button
               type="submit"
               className="botao-salvar"
-              disabled={!houveAlteracoes}
-              title={!houveAlteracoes ? "Nenhuma alteração foi feita" : "Salvar alterações"}
+              title="Salvar alterações"
             >
-              💾 {houveAlteracoes ? "Salvar alterações" : "Sem alterações"}
+              💾 Salvar alterações
             </button>
             <button type="button" className="botao-cancelar" onClick={() => navigate("/dashboard")}>
               ❌ Cancelar
