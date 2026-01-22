@@ -25,8 +25,14 @@ export default function Dashboard() {
   const [alunos, setAlunos] = useState<Aluno[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
+  const [mensagem, setMensagem] = useState<{ texto: string; tipo: "sucesso" | "erro" } | null>(null);
+  const [alunoADeletar, setAlunoADeletar] = useState<Aluno | null>(null);
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [itensPorPagina, setItensPorPagina] = useState(10);
+  const [filtroNome, setFiltroNome] = useState("");
+  const [filtroEmail, setFiltroEmail] = useState("");
+  const [filtroCpf, setFiltroCpf] = useState("");
+  const [filtroWhatsapp, setFiltroWhatsapp] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,12 +40,24 @@ export default function Dashboard() {
   }, []);
 
   // ======================
+  // LÓGICA DE FILTROS
+  // ======================
+  const alunosFiltrados = alunos.filter((aluno) => {
+    const nomeMatch = aluno.nome.toLowerCase().includes(filtroNome.toLowerCase());
+    const emailMatch = aluno.email.toLowerCase().includes(filtroEmail.toLowerCase());
+    const cpfMatch = aluno.cpf.includes(filtroCpf);
+    const whatsappMatch = aluno.whatsapp.includes(filtroWhatsapp);
+
+    return nomeMatch && emailMatch && cpfMatch && whatsappMatch;
+  });
+
+  // ======================
   // CÁLCULO DE PAGINAÇÃO
   // ======================
   const indexUltimo = paginaAtual * itensPorPagina;
   const indexPrimeiro = indexUltimo - itensPorPagina;
-  const alunosAtuais = alunos.slice(indexPrimeiro, indexUltimo);
-  const totalPaginas = Math.ceil(alunos.length / itensPorPagina);
+  const alunosAtuais = alunosFiltrados.slice(indexPrimeiro, indexUltimo);
+  const totalPaginas = Math.ceil(alunosFiltrados.length / itensPorPagina);
 
   const mudarPagina = (numeroPagina: number) => {
     setPaginaAtual(numeroPagina);
@@ -49,6 +67,22 @@ export default function Dashboard() {
   const mudarItensPorPagina = (quantidade: number) => {
     setItensPorPagina(quantidade);
     setPaginaAtual(1);
+  };
+
+  const limparFiltros = () => {
+    setFiltroNome("");
+    setFiltroEmail("");
+    setFiltroCpf("");
+    setFiltroWhatsapp("");
+    setPaginaAtual(1);
+  };
+
+  // ======================
+  // EXIBIR MENSAGEM
+  // ======================
+  const exibirMensagem = (texto: string, tipo: "sucesso" | "erro") => {
+    setMensagem({ texto, tipo });
+    setTimeout(() => setMensagem(null), 4000);
   };
 
   // ======================
@@ -93,18 +127,22 @@ export default function Dashboard() {
   // ======================
   // DELETAR ALUNO
   // ======================
-  const deletarAluno = async (id: number) => {
-    const confirmar = window.confirm(
-      "Tem certeza que deseja excluir este aluno?"
-    );
+  const abrirConfirmacaoDeletar = (aluno: Aluno) => {
+    setAlunoADeletar(aluno);
+  };
 
-    if (!confirmar) return;
+  const cancelarDeletar = () => {
+    setAlunoADeletar(null);
+  };
+
+  const confirmarDeletar = async () => {
+    if (!alunoADeletar) return;
 
     try {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `https://api.santos-tech.com/api/alunos/${id}`,
+        `https://api.santos-tech.com/api/alunos/${alunoADeletar.id}`,
         {
           method: "DELETE",
           headers: {
@@ -116,15 +154,18 @@ export default function Dashboard() {
       const data = await response.json();
 
       if (!response.ok) {
-        alert(data.erro || "Erro ao deletar aluno");
+        exibirMensagem(data.erro || "Erro ao deletar aluno", "erro");
+        setAlunoADeletar(null);
         return;
       }
 
-      alert("Aluno removido com sucesso!");
+      exibirMensagem("Aluno deletado com sucesso!", "sucesso");
+      setAlunoADeletar(null);
       buscarAlunos(); // 🔄 atualiza lista
     } catch (error) {
       console.error("❌ Erro ao deletar aluno:", error);
-      alert("Erro ao conectar com o servidor");
+      exibirMensagem("Erro ao conectar com o servidor", "erro");
+      setAlunoADeletar(null);
     }
   };
 
@@ -161,6 +202,12 @@ export default function Dashboard() {
           </div>
         </header>
 
+        {mensagem && (
+          <div className={`mensagem-toast mensagem-${mensagem.tipo}`}>
+            {mensagem.texto}
+          </div>
+        )}
+
         {carregando && (
           <div className="loading-container">
             <div className="loading-spinner">
@@ -178,7 +225,7 @@ export default function Dashboard() {
         {!carregando && !erro && (
           <>
             <div className="dashboard-stats">
-              <h2>Total de alunos: {alunos.length}</h2>
+              <h2>Total de alunos: {alunosFiltrados.length} {alunosFiltrados.length !== alunos.length && `(${alunos.length} no total)`}</h2>
               <div className="pagination-control">
                 <label>Itens por página:</label>
                 <select
@@ -192,6 +239,76 @@ export default function Dashboard() {
                   <option value={50}>50</option>
                 </select>
               </div>
+            </div>
+
+            {/* Seção de Filtros */}
+            <div className="filtros-container">
+              <h3>Filtros de Pesquisa</h3>
+              <div className="filtros-grid">
+                <div className="filtro-field">
+                  <label htmlFor="filtro-nome">Nome:</label>
+                  <input
+                    id="filtro-nome"
+                    type="text"
+                    placeholder="Pesquisar por nome..."
+                    value={filtroNome}
+                    onChange={(e) => {
+                      setFiltroNome(e.target.value);
+                      setPaginaAtual(1);
+                    }}
+                    className="filtro-input"
+                  />
+                </div>
+
+                <div className="filtro-field">
+                  <label htmlFor="filtro-email">Email:</label>
+                  <input
+                    id="filtro-email"
+                    type="text"
+                    placeholder="Pesquisar por email..."
+                    value={filtroEmail}
+                    onChange={(e) => {
+                      setFiltroEmail(e.target.value);
+                      setPaginaAtual(1);
+                    }}
+                    className="filtro-input"
+                  />
+                </div>
+
+                <div className="filtro-field">
+                  <label htmlFor="filtro-cpf">CPF:</label>
+                  <input
+                    id="filtro-cpf"
+                    type="text"
+                    placeholder="Pesquisar por CPF..."
+                    value={filtroCpf}
+                    onChange={(e) => {
+                      setFiltroCpf(e.target.value);
+                      setPaginaAtual(1);
+                    }}
+                    className="filtro-input"
+                  />
+                </div>
+
+                <div className="filtro-field">
+                  <label htmlFor="filtro-whatsapp">WhatsApp:</label>
+                  <input
+                    id="filtro-whatsapp"
+                    type="text"
+                    placeholder="Pesquisar por WhatsApp..."
+                    value={filtroWhatsapp}
+                    onChange={(e) => {
+                      setFiltroWhatsapp(e.target.value);
+                      setPaginaAtual(1);
+                    }}
+                    className="filtro-input"
+                  />
+                </div>
+              </div>
+
+              <button onClick={limparFiltros} className="botao-limpar-filtros">
+                🔄 Limpar Filtros
+              </button>
             </div>
 
             <div className="tabela-container">
@@ -249,7 +366,7 @@ export default function Dashboard() {
                         </button>
 
                         <button
-                          onClick={() => deletarAluno(aluno.id)}
+                          onClick={() => abrirConfirmacaoDeletar(aluno)}
                           className="botao-excluir"
                           title="Deletar aluno"
                         >
@@ -316,6 +433,25 @@ export default function Dashboard() {
               Mostrando {indexPrimeiro + 1} a {Math.min(indexUltimo, alunos.length)} de {alunos.length} alunos
             </div>
           </>
+        )}
+
+        {/* Modal de Confirmação */}
+        {alunoADeletar && (
+          <div className="modal-overlay">
+            <div className="modal-confirmacao">
+              <h3>Confirmar Exclusão</h3>
+              <p>Tem certeza que deseja excluir o aluno <strong>{alunoADeletar.nome}</strong>?</p>
+              <p className="modal-aviso">Esta ação não pode ser desfeita.</p>
+              <div className="modal-buttons">
+                <button onClick={cancelarDeletar} className="botao-cancelar-modal">
+                  ❌ Cancelar
+                </button>
+                <button onClick={confirmarDeletar} className="botao-confirmar-modal">
+                  🗑️ Deletar
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>
