@@ -281,9 +281,6 @@ export function Formulario() {
                   />
                 </div>
 
-                <div className="btn-add-familiar">
-                  <button type="button" id='btn-responsavel' onClick={handleAdicionarResponsavel}>Adicionar responsável</button>
-                </div>
               </>
             )}
 
