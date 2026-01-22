@@ -28,7 +28,6 @@ export default function EditarAluno() {
   const navigate = useNavigate();
 
   const [aluno, setAluno] = useState<Aluno | null>(null);
-  const [alunoOriginal, setAlunoOriginal] = useState<Aluno | null>(null);
   const [responsaveis, setResponsaveis] = useState<Responsavel[]>([]);
   const [responsavelAtivo, setResponsavelAtivo] = useState<number>(0);
   const [mensagem, setMensagem] = useState<{
@@ -81,7 +80,6 @@ export default function EditarAluno() {
 
       const data = await response.json();
       setAluno(data);
-      setAlunoOriginal(data);
 
       // Carregar responsáveis
       if (data.responsaveis && Array.isArray(data.responsaveis) && data.responsaveis.length > 0) {
