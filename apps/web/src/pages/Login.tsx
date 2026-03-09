@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { startMatrixRain } from "../utils/matrixrain";
 import "../styles/login-matrix.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "https://banco-de-talentos.santos-tech.com/api";
+
 export function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -34,7 +36,7 @@ export function Login() {
     setCarregando(true);
 
     try {
-      const response = await fetch("https://api.santos-tech.com/api/auth/login", {
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),

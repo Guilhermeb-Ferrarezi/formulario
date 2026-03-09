@@ -21,6 +21,8 @@ interface Aluno {
   responsaveis?: Responsavel[];
 }
 
+const API_URL = import.meta.env.VITE_API_URL || "https://banco-de-talentos.santos-tech.com/api";
+
 export default function Dashboard() {
   const [alunos, setAlunos] = useState<Aluno[]>([]);
   const [carregando, setCarregando] = useState(true);
@@ -96,7 +98,7 @@ export default function Dashboard() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "https://api.santos-tech.com/api/alunos",
+        `${API_URL}/alunos`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -142,7 +144,7 @@ export default function Dashboard() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `https://api.santos-tech.com/api/alunos/${alunoADeletar.id}`,
+        `${API_URL}/alunos/${alunoADeletar.id}`,
         {
           method: "DELETE",
           headers: {

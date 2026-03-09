@@ -3,7 +3,7 @@ import { validarEmail, validarCPF } from "../utils/validarFormulario";
 import type { FormValues } from "../utils/validarFormulario";
 
 // 🔥 URL vinda do ambiente (Vite)
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+const API_URL = import.meta.env.VITE_API_URL || "https://banco-de-talentos.santos-tech.com/api";
 type Mensagem = {
   texto: string;
   tipo: "sucesso" | "erro";

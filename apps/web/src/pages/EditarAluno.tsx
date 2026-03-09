@@ -23,6 +23,8 @@ interface Aluno {
   responsaveis?: Responsavel[];
 }
 
+const API_URL = import.meta.env.VITE_API_URL || "https://banco-de-talentos.santos-tech.com/api";
+
 export default function EditarAluno() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -64,7 +66,7 @@ export default function EditarAluno() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `https://api.santos-tech.com/api/alunos/${id}`,
+        `${API_URL}/alunos/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -207,7 +209,7 @@ export default function EditarAluno() {
       };
 
       const response = await fetch(
-        `https://api.santos-tech.com/api/alunos/${id}`,
+        `${API_URL}/alunos/${id}`,
         {
           method: "PUT",
           headers: {
